@@ -63,6 +63,7 @@ def enable_arithmetic(proxy, name):
             setattr(proxy, "__r%s__"%n, binary)
             setattr(proxy, "__i%s__"%n, inplace)
         setattr(proxy, "__neg__", lambda self: cppyy.gbl.eantic.minus(self))
+        setattr(proxy, "__pow__", lambda self, n: cppyy.gbl.eantic.pow(self, n))
 
 cppyy.py.add_pythonization(enable_arithmetic, "eantic")
 
@@ -83,8 +84,7 @@ cppyy.cppdef("""
 
 // See https://bitbucket.org/wlav/cppyy/issues/95/lookup-of-friend-operator
 namespace eantic {
-// Not implemented yet in the C++ wrapper
-// std::ostream &operator<<(std::ostream &, const renf_class &);
+std::ostream &operator<<(std::ostream &, const renf_class &);
 std::ostream &operator<<(std::ostream &, const renf_elem_class &);
 }  // namespace eantic
 
