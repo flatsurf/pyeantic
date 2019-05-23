@@ -1,0 +1,60 @@
+# conda-smithy assumes that the build number is >= 1000 when building with the new anaconda compilers,
+# this probably is not important but make_build_number otherwise complains during the build
+# See https://github.com/conda/conda-build/issues/2666 for the missing tag
+{% set version = environ.get('GIT_DESCRIBE_TAG', 'untagged')|string|replace('-','_') %}
+{% set build_number = (environ.get('GIT_DESCRIBE_NUMBER')|int + 1000)|string %}
+{% set build_string = "master_" + build_number %}
+{% set flavour = environ.get('FLAVOUR', 'build')|string %}
+
+package:
+  name: pyeantic
+  version: {{ version }}
+
+source:
+  git_url: {{ environ.get('FEEDSTOCK_ROOT', '..') }}
+
+build:
+  number: {{ build_number }}
+  string: {{ build_string }}
+  # eantic is not available for Windows
+  skip: True  # [win]
+  # compiler(cxx) is clang4 on OSX which lacks some C++ features
+  skip: True  # [osx]
+  script:
+    - ./recipe/build-{{ flavour }}.sh
+    # conda-build can currently not copy build-artifacts over to the testing
+    # stage, so we can only run make check if we rebuild everything. Therefore,
+    # we run make check as part of the build in the usual make; make check;
+    # make install order.
+    - ./recipe/test-{{ flavour }}.sh
+    - make install
+
+requirements:
+  build:
+    - libtool
+    - automake
+    # to search for the eanticxx library
+    - {{ compiler('cxx') }}
+  host:
+    - e-antic 1.*
+  # cppyy, not packaged in conda-forge yet
+  # run:
+  #   - cppyy
+  run_exports:
+    - pyeantic {{ version }}
+
+# We cannot test that that the import works since cppyy is not on conda-forge yet
+#test:
+#  imports:
+#    - pyeantic
+
+about:
+  home: https://github.com/flatsurf/pyeantic
+  license: LGPL3
+  license_file: COPYING
+  summary: Python Wrapper for E-ANTIC
+
+extra:
+  recipe-maintainers:
+    - saraedum
+    - videlec

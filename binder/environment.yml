@@ -1,0 +1,10 @@
+name: binder
+channels:
+  - flatsurf
+  - conda-forge
+  - defaults
+dependencies:
+  - pyeantic
+  - pip
+  - notebook
+  - xeus-cling
