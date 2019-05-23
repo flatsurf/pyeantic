@@ -3,21 +3,11 @@
 ![Windows disabled](https://img.shields.io/badge/Windows-disabled-lightgrey.svg)
 ![ppc64le disabled](https://img.shields.io/badge/ppc64le-disabled-lightgrey.svg)
 
-## Interval Exchange Transformations
+## Python Wrapper for E-ANTIC
 
-This repository provides an implementation of *Boshernitzan algorithm* using
-interval exchange transformation. The aim is to compute the decomposition of a
-given measured foliation into its periodic and minimal components. The delicate
-part is of course to certify that a given component is minimal and this is
-where the Boshernitzan's algorithm comes into play.
-
-With the iet version we do not do the full decomposition but rather on one side
-the union of minimal components and on the other side the periodic components.
-Separating minimal components is not easily achieved with Rauzy induction.
-
-If we do implement saddle connection search via flipping, we might want to
-implement the decomposition by flipping. In that case we can separate the
-minimal components and recover the full decomposition.
+This repository implements a Python wrapper for
+[E-ANTIC](https://github.com/videlec/e-antic) powered by
+[cppyy](https://github.com/videlec/e-antic).
 
 ## Current Release Info
 
