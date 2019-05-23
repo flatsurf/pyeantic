@@ -18,4 +18,4 @@
 #  along with pyeantic. If not, see <https://www.gnu.org/licenses/>.
 #####################################################################
 
-from .cppyy_pyeantic import pyeantic
+from .cppyy_eantic import pyeantic
