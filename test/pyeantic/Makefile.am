@@ -1,10 +1,10 @@
-TESTS = renf_class.py renf_elem_class.py
+TESTS = renf.py renf_elem.py
 EXTRA_DIST = $(TESTS)
 
 AM_TESTS_ENVIRONMENT = . $(builddir)/test-env.sh;
 
-renf_class.py: test-env.sh
-renf_elem_class.py: test-env.sh
+renf.py: test-env.sh
+renf_elem.py: test-env.sh
 
 @VALGRIND_CHECK_RULES@
 

@@ -23,21 +23,19 @@
 import sys
 import pytest
 
-from pyintervalxt import intervalxt
+from pyeantic import eantic
 
-IET = intervalxt.IntervalExchangeTransformation[int, int]
+def test_repr():
+    K = eantic.renf("x^2 - 3", "x", "1.73 +/- 0.1")
+    x = K.gen()
+    assert repr(x) == "(x ~ 1.732051)"
 
-expected="""01
-01
-interval 0 length 18
-interval 1 length 3
-1 0 
-0 1 
-"""
+def test_arithmetic():
+    K = eantic.renf("x^2 - 3", "x", "1.73 +/- 0.1")
+    x = K.gen()
 
-def test_IntervalExchangeTransformation():
-    iet = IET(2)
-    iet.setLengths([18, 3])
-    assert repr(iet) == expected
+    assert x + x == 2*x
+    assert not (x - x)
+    assert (x + 1) * (x - 1) == x*x - 1
 
 if __name__ == '__main__': sys.exit(pytest.main(sys.argv))
