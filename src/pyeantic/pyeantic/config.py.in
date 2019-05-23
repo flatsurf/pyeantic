@@ -18,4 +18,13 @@
 #  along with pyeantic. If not, see <https://www.gnu.org/licenses/>.
 #####################################################################
 
-libdir = "@libdir@"
+# Normally @libdir@ would be the place where libraries are installed by this
+# autoconfiscated package. We need to load libeanticxx with cling at runtime.
+# This usually works by just searching for it in @libdir@, however, in some
+# setup (e.g., installs into a different prefix,) the library might not be in
+# that prefix but still on the search path somehow. Thefore we parse all of
+# LDFLAGS here so we do not miss our library at runtime. This is a bit hacky,
+# and a more robust approach that also make distcheck work would be
+# appreciated.
+libdir = r"@libdir@"
+libdir = [path[2:] for path in libdir.split() if path.startswith('-L')]

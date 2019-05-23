@@ -71,11 +71,12 @@ for path in os.environ.get('PYINTERVALXT_INCLUDE','').split(':'):
 
 from .config import libdir
 
-cppyy.cppdef("""
+cppyy.cppdef("\n".join([r"""
 #pragma cling add_library_path("%s")
+"""%path for path in libdir]) + """
 #pragma cling load("libeantic")
 #pragma cling load("libeanticxx")
-"""%(libdir,))
+""")
 
 cppyy.cppdef("""
 #include <e-antic/renfxx.h>

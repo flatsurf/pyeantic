@@ -17,4 +17,4 @@ CLEANFILES = setup.py pyeantic/config.py
 $(builddir)/setup.py: $(srcdir)/setup.py.in Makefile
 	sed -e 's,[@]top_srcdir[@],$(top_srcdir),g' -e 's,[@]PACKAGE_VERSION[@],$(PACKAGE_VERSION),g' < $< > $@
 $(builddir)/pyeantic/config.py: $(srcdir)/pyeantic/config.py.in Makefile
-	sed -e 's,[@]libdir[@],$(libdir),g' -e 's,[@]PACKAGE_VERSION[@],$(PACKAGE_VERSION),g' < $< > $@
+	sed -e 's?[@]libdir[@]?-L$(libdir) $(LDFLAGS)?g' -e 's,[@]PACKAGE_VERSION[@],$(PACKAGE_VERSION),g' < $< > $@
