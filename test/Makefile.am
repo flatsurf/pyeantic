@@ -1,1 +1,4 @@
-SUBDIRS = pyeantic
+if HAVE_PYTEST
+  MAYBE_PYEANTIC = pyeantic
+endif
+SUBDIRS = $(MAYBE_PYEANTIC)
