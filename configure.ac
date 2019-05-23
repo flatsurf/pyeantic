@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 dnl We need at least autoconf 2.69 for this configure.ac to work.
 AC_PREREQ([2.69])
-AC_INIT([intervalxt], [1.0.0], [julian.rueth@fsfe.org])
+AC_INIT([pyeantic], [1.0.0], [julian.rueth@fsfe.org])
 
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([1.14.1])
@@ -47,7 +47,7 @@ AS_IF([test "x$with_pytest" != "xno" && test "x$have_python" = "xyes"],
       ], [])
 AM_CONDITIONAL([HAVE_PYTEST], [test "x$with_pytest" = "xyes"])
 
-AC_CONFIG_FILES([Makefile src/Makefile src/pyeantic/Makefile test/Makefile test/pyintervalxt/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile src/pyeantic/Makefile test/Makefile test/pyeantic/Makefile])
 
 dnl Python's setuptools absolutely want to run in the source directory of the
 dnl module. Since this is incompatible with out-of-tree builds of
