@@ -37,6 +37,7 @@ requirements:
     - {{ compiler('cxx') }}
   host:
     - e-antic 1.*
+    - boost-cpp
   # cppyy, not packaged in conda-forge yet
   # run:
   #   - cppyy
