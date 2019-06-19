@@ -27,7 +27,7 @@ import pytest
 from pyeantic import eantic
 
 def test_repr():
-    K = eantic.renf.make("x^2 - 3", "x", "1.73 +/- 0.1")
+    K = eantic.renf("x^2 - 3", "x", "1.73 +/- 0.1")
     assert str(K) == repr(K)
     assert str(K) == "NumberField(x^2 - 3, [1.7320508075688772935274463415058723669 +/- 5.08e-38])"
 

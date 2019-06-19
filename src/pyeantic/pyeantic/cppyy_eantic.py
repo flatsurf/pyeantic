@@ -112,10 +112,27 @@ T minus(const T &lhs) {
   return -lhs;
 }
 
+template <typename S, typename T>
+auto make_renf_elem_class(const S& s, const T& t) {
+    return renf_elem_class(s, t);
+}
+
 }  // namespace eantic
 """)
 
 from cppyy.gbl import eantic
 
-eantic.renf = eantic.renf_class
-eantic.renf_elem = eantic.renf_elem_class
+eantic.renf = eantic.renf_class.make
+
+# NOTE: cppyy is confused by template resolution, see
+# https://github.com/flatsurf/pyeantic/issues/10
+def py_make_renf_elem_class(*args):
+    if len(args) == 1:
+        return eantic.renf_elem_class(args[0])
+    elif len(args) == 2:
+        K, v = args
+        if isinstance(v, (tuple, list)):
+            v = cppyy.gbl.std.vector[int](v)
+        return eantic.make_renf_elem_class[cppyy.gbl.std.shared_ptr[eantic.renf_class], type(v)](K, v)
+
+eantic.renf_elem = py_make_renf_elem_class

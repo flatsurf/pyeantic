@@ -27,12 +27,30 @@ import pytest
 from pyeantic import eantic
 
 def test_repr():
-    K = eantic.renf.make("x^2 - 3", "x", "1.73 +/- 0.1")
+    K = eantic.renf("x^2 - 3", "x", "1.73 +/- 0.1")
     x = K.gen()
     assert repr(x) == "(x ~ 1.732051)"
 
+def test_construct():
+    K = eantic.renf("A^3 - 3", "A", "1.44 +/- 0.1")
+    zero = K.zero()
+    one = K.one()
+    A = K.gen()
+    assert eantic.renf_elem(K) == zero
+    assert eantic.renf_elem(K, "A") == A
+    assert eantic.renf_elem(K, "A - 3") == A - 3
+    assert eantic.renf_elem(K, "1") == one
+    assert eantic.renf_elem(A) == A
+    assert eantic.renf_elem(K, 1) == one
+    assert eantic.renf_elem(K, [0,0,0]) == zero
+    assert eantic.renf_elem(K, [1,0,0]) == one
+    assert eantic.renf_elem(K, [0,1,0]) == A
+
+def test_construct_no_parent():
+    assert eantic.renf_elem(1) == 1
+
 def test_arithmetic():
-    K = eantic.renf.make("x^2 - 3", "x", "1.73 +/- 0.1")
+    K = eantic.renf("x^2 - 3", "x", "1.73 +/- 0.1")
     x = K.gen()
 
     assert x + x == 2*x
@@ -42,7 +60,7 @@ def test_arithmetic():
     assert -x != x
 
 def test_delete_parent_before_binop():
-    K = eantic.renf.make("x^3 - 3", "x", "1.44 +/- 0.1")
+    K = eantic.renf("x^3 - 3", "x", "1.44 +/- 0.1")
     x = K.gen()
     y = K.gen() + 1
     del K
