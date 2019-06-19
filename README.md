@@ -31,8 +31,8 @@ conda activate pyeantic
 The Python wrapper `pyeantic` is based on [cppyy](https://cppyy.readthedocs.io/) which is [not available on conda-forge yet](https://bitbucket.org/wlav/cppyy/issues/55/package-for-conda-forge). Therefore, to use the Python wrapper, you need to install cppyy from PyPI:
 
 ```
-conda install pip
-pip install cppyy
+conda install pip3
+pip3 install cppyy
 ```
 
 ## Run with binder in the Cloud

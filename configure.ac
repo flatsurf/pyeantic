@@ -27,7 +27,7 @@ dnl Check for required libraries
 AC_LANG([C++])
 
 dnl We want to build a Python module powered by cppyy
-AM_PATH_PYTHON([3.6], , [AC_MSG_ERROR([Python not found])])
+AM_PATH_PYTHON([3.6], [have_python=yes], [have_python=no])
 
 dnl We use some C++17 features, such as if constexpr
 AX_CXX_COMPILE_STDCXX(17)

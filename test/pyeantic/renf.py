@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 ######################################################################
 #  This file is part of intervalxt.
@@ -26,9 +27,8 @@ import pytest
 from pyeantic import eantic
 
 def test_repr():
-    K = eantic.renf("x^2 - 3", "x", "1.73 +/- 0.1")
+    K = eantic.renf.make("x^2 - 3", "x", "1.73 +/- 0.1")
     assert str(K) == repr(K)
-    # operator<< is not implemented in the C++ wrapper yet
-    # assert str(K) == "?"
+    assert str(K) == "NumberField(x^2 - 3, [1.7320508075688772935274463415058723669 +/- 5.08e-38])"
 
 if __name__ == '__main__': sys.exit(pytest.main(sys.argv))
