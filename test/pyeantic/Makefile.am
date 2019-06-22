@@ -1,4 +1,4 @@
-TESTS = renf.py renf_elem.py
+TESTS = renf.py renf_elem.py eantic_sage.py doc.py
 EXTRA_DIST = $(TESTS)
 
 AM_TESTS_ENVIRONMENT = . $(builddir)/test-env.sh;
