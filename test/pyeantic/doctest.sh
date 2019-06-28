@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#!/bin/sh
 
 ######################################################################
 #  This file is part of pyeantic.
@@ -21,16 +20,8 @@
 #  along with pyeantic. If not, see <https://www.gnu.org/licenses/>.
 #####################################################################
 
-import sys
-import pytest
-import doctest
-
-
-if __name__ == '__main__':
-    try:
-        import sage.all
-    except InportError:
-        sys.exit(0)
-    import pyeantic.sage_conversion
-    sys.exit(doctest.testmod(pyeantic.sage_conversion).failed)
-
+# We ignore import errors, so SageMath tests get ignored when SageMath is not present.
+pytest --doctest-modules --doctest-ignore-import-errors ../../src/pyeantic/pyeantic/
+ret="$?"
+[[ $ret -eq 5 ]] && exit 0
+exit $ret

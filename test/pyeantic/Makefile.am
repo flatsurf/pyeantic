@@ -1,10 +1,16 @@
-TESTS = renf.py renf_elem.py eantic_sage.py doc.py
+if HAVE_SAGE
+  MAYBE_SAGE = eantic_sage.py
+endif
+TESTS = renf.py renf_elem.py doctest.sh ${MAYBE_SAGE}
 EXTRA_DIST = $(TESTS)
 
 AM_TESTS_ENVIRONMENT = . $(builddir)/test-env.sh;
 
 renf.py: test-env.sh
 renf_elem.py: test-env.sh
+eantic_sage.py: test-env.sh
+doctest.sh: test-env.sh
+doctest_sage.sh: test-env.sh
 
 @VALGRIND_CHECK_RULES@
 
