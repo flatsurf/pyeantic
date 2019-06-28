@@ -113,9 +113,14 @@ T minus(const T &lhs) {
   return -lhs;
 }
 
-template <typename S, typename T>
-auto make_renf_elem_class(const S& s, const T& t) {
-    return renf_elem_class(s, t);
+template <typename T>
+auto make_renf_elem_class(const T& t) {
+    return renf_elem_class(t);
+}
+
+template <typename T>
+auto make_renf_elem_class_with_parent(const std::shared_ptr<renf_class> K, const T& t) {
+    return renf_elem_class(K, t);
 }
 
 }  // namespace eantic
@@ -125,15 +130,20 @@ from cppyy.gbl import eantic
 
 eantic.renf = eantic.renf_class.make
 
-# NOTE: cppyy is confused by template resolution, see
-# https://github.com/flatsurf/pyeantic/issues/10
+# cppyy is confused by template resolution, see
+# https://bitbucket.org/wlav/cppyy/issues/119/templatized-constructor-is-ignored
+# and https://github.com/flatsurf/pyeantic/issues/10
 def py_make_renf_elem_class(*args):
     if len(args) == 1:
-        return eantic.renf_elem_class(args[0])
+        v = args[0]
+        if isinstance(v, eantic.renf_class):
+            return eantic.renf_elem_class(v)
+        else:
+            return eantic.make_renf_elem_class(v)
     elif len(args) == 2:
         K, v = args
         if isinstance(v, (tuple, list)):
             v = cppyy.gbl.std.vector[int](v)
-        return eantic.make_renf_elem_class[cppyy.gbl.std.shared_ptr[eantic.renf_class], type(v)](K, v)
+        return eantic.make_renf_elem_class_with_parent[type(v)](K, v)
 
 eantic.renf_elem = py_make_renf_elem_class
