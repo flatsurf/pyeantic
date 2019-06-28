@@ -53,7 +53,7 @@ AM_CONDITIONAL([HAVE_PYTEST], [test "x$with_pytest" = "xyes"])
 
 dnl Some bits require SageMath to be installed. We can build without it since it is a pure Python package but we cannot test it then.
 AC_ARG_WITH([sage], AS_HELP_STRING([--without-sage], [Do not run SageMath tests]))
-AS_IF([test "x$with_sage" != "xno" && test "x$have_python" = "xyes"],
+AS_IF([test "x$with_sage" != "xno" && test "x$have_pytest" = "xyes"],
       [
        with_sage=yes
        AC_MSG_CHECKING([for sage module])
