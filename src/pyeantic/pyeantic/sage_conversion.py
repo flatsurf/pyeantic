@@ -22,7 +22,7 @@
 try:
     import sage.all
 except ImportError:
-    raise ImportError("sage_interface depends on SageMath")
+    raise ImportError("sage_conversion requires SageMath")
 
 import numbers
 
