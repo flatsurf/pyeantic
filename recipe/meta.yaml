@@ -38,16 +38,13 @@ requirements:
   host:
     - e-antic 1.*
     - boost-cpp
-  # cppyy, not packaged in conda-forge yet
-  # run:
-  #   - cppyy
+    - cppyy
   run_exports:
     - pyeantic {{ version }}
 
-# We cannot test that that the import works since cppyy is not on conda-forge yet
-#test:
-#  imports:
-#    - pyeantic
+test:
+  imports:
+    - pyeantic
 
 about:
   home: https://github.com/flatsurf/pyeantic

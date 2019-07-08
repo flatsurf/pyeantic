@@ -8,3 +8,4 @@ dependencies:
   - pip
   - notebook
   - xeus-cling
+  - cppyy
