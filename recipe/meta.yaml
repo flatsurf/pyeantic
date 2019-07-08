@@ -36,6 +36,7 @@ requirements:
     # to search for the eanticxx library
     - {{ compiler('cxx') }}
   host:
+    - setuptools
     - e-antic 1.*
     - boost-cpp
     - cppyy
