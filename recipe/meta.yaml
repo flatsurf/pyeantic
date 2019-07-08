@@ -39,7 +39,9 @@ requirements:
     - setuptools
     - e-antic 1.*
     - boost-cpp
+    # needed to run tests
     - cppyy
+    - pytest
   run_exports:
     - pyeantic {{ version }}
 
