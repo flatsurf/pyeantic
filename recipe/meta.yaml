@@ -42,6 +42,7 @@ requirements:
     # needed to run tests
     - cppyy
     - pytest
+    - sage
   run_exports:
     - pyeantic {{ version }}
 
