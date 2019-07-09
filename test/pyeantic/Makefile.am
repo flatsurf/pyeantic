@@ -2,7 +2,7 @@ if HAVE_SAGE
   MAYBE_SAGE = eantic_sage.py
 endif
 TESTS = renf.py renf_elem.py doctest.sh ${MAYBE_SAGE}
-EXTRA_DIST = $(TESTS)
+EXTRA_DIST = $(TESTS) eantic_sage.py
 
 AM_TESTS_ENVIRONMENT = . $(builddir)/test-env.sh;
 
