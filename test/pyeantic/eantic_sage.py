@@ -48,9 +48,4 @@ def test_nf():
     L = sage_nf_to_eantic(K)
 
 if __name__ == '__main__':
-    try:
-        import sage.all
-    except ImportError:
-        sys.exit(0)
-    else:
-        sys.exit(pytest.main(sys.argv))
+    sys.exit(pytest.main(sys.argv))

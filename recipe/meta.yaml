@@ -20,6 +20,8 @@ build:
   skip: True  # [win]
   # compiler(cxx) is clang4 on OSX which lacks some C++ features
   skip: True  # [osx]
+  # this is a pure Python package (though it depends on non-Python libraries through cppyy)
+  noarch: python
   script:
     - ./recipe/build-{{ flavour }}.sh
     # conda-build can currently not copy build-artifacts over to the testing
@@ -33,16 +35,22 @@ requirements:
   build:
     - libtool
     - automake
-    # to search for the eanticxx library
+    # to search for the renfxx library, the C++ wrapper for e-antic
     - {{ compiler('cxx') }}
   host:
+    - python >=3.6
     - setuptools
-    - e-antic 1.*
-    - boost-cpp
-    # needed to run tests
+    # We need all runtime dependencies to run tests during the build
     - cppyy
+    - boost-cpp
+    - e-antic 1.*
+    # We use pytest for testing
     - pytest
+    # We want to run our optional SageMath tests
     - sage
+  run:
+    - cppyy
+    - boost-cpp
   run_exports:
     - pyeantic {{ version }}
 

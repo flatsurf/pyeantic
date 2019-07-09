@@ -10,12 +10,11 @@ renf.py: test-env.sh
 renf_elem.py: test-env.sh
 eantic_sage.py: test-env.sh
 doctest.sh: test-env.sh
-doctest_sage.sh: test-env.sh
 
 @VALGRIND_CHECK_RULES@
 
 # Run tests serially so we can see the output without having to check the log file explicitly.
-# AUTOMAKE_OPTIONS = serial-tests
+AUTOMAKE_OPTIONS = serial-tests
 
 BUILT_SOURCES = test-env.sh
 EXTRA_DIST += test-env.sh.in
