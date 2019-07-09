@@ -5,6 +5,6 @@ channels:
   - defaults
 dependencies:
   - pyeantic
-  - pip
   - notebook
   - xeus-cling
+  - cppyy

@@ -2,7 +2,7 @@ if HAVE_SAGE
   MAYBE_SAGE = eantic_sage.py
 endif
 TESTS = renf.py renf_elem.py doctest.sh ${MAYBE_SAGE}
-EXTRA_DIST = $(TESTS)
+EXTRA_DIST = $(TESTS) eantic_sage.py
 
 AM_TESTS_ENVIRONMENT = . $(builddir)/test-env.sh;
 
@@ -10,12 +10,8 @@ renf.py: test-env.sh
 renf_elem.py: test-env.sh
 eantic_sage.py: test-env.sh
 doctest.sh: test-env.sh
-doctest_sage.sh: test-env.sh
 
 @VALGRIND_CHECK_RULES@
-
-# Run tests serially so we can see the output without having to check the log file explicitly.
-# AUTOMAKE_OPTIONS = serial-tests
 
 BUILT_SOURCES = test-env.sh
 EXTRA_DIST += test-env.sh.in

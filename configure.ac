@@ -69,6 +69,8 @@ dnl module. Since this is incompatible with out-of-tree builds of
 dnl autoconfiscated packages, we have to copy all the Python bits over to the
 dnl build dir manually so that Python can't tell the difference.
 AC_CONFIG_LINKS([src/pyeantic/pyeantic/__init__.py:src/pyeantic/pyeantic/__init__.py
-                 src/pyeantic/pyeantic/cppyy_eantic.py:src/pyeantic/pyeantic/cppyy_eantic.py])
+                 src/pyeantic/pyeantic/cppyy_eantic.py:src/pyeantic/pyeantic/cppyy_eantic.py
+                 src/pyeantic/pyeantic/realalg_conversion.py:src/pyeantic/pyeantic/realalg_conversion.py
+                 src/pyeantic/pyeantic/sage_conversion.py:src/pyeantic/pyeantic/sage_conversion.py])
 
 AC_OUTPUT

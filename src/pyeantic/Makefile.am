@@ -9,7 +9,7 @@ uninstall-local:
 	rm -rf $(DESTDIR)$(pythondir)/pyeantic
 
 clean-local:
-	-rm -rf pyeantic/__pycache__ pyeantic.egg-info build
+	-rm -rf pyeantic/__pycache__ pyeantic.egg-info build .pytest_cache
 
 BUILT_SOURCES = setup.py pyeantic/config.py
 EXTRA_DIST = setup.py.in pyeantic/config.py.in
