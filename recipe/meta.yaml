@@ -51,6 +51,9 @@ requirements:
   run:
     - cppyy
     - boost-cpp
+    # Strangely run_exports of e-antic is not picked up correctly (it's missing from the package on flatsurf)
+    # This is probably due to recent bugs in conda-build (mid 2019)
+    - e-antic 1.*
   run_exports:
     - pyeantic {{ version }}
 
