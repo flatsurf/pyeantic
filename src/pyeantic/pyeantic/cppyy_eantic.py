@@ -58,6 +58,8 @@ def enable_arithmetic(proxy, name):
                 # fine for the types we're using at least.
                 return type(x).__cppname__ if hasattr(type(x), '__cppname__') else type(x).__name__
             def binary(lhs, rhs, op = op):
+                lhs = sage_to_gmp(lhs)
+                rhs = sage_to_gmp(rhs)
                 return cppyy.gbl.eantic.boost_binary[cppname(lhs), cppname(rhs), op](lhs, rhs)
             def inplace(lhs, *args, **kwargs): raise NotImplementedError("inplace operators are not supported yet")
             setattr(proxy, "__%s__"%n, binary)
@@ -139,11 +141,46 @@ def py_make_renf_elem_class(*args):
         if isinstance(v, eantic.renf_class):
             return eantic.renf_elem_class(v)
         else:
+            v = sage_to_gmp(v)
             return eantic.make_renf_elem_class(v)
     elif len(args) == 2:
         K, v = args
-        if isinstance(v, (tuple, list)):
-            v = cppyy.gbl.std.vector[int](v)
+        v = sage_to_gmp(v)
         return eantic.make_renf_elem_class_with_parent[type(v)](K, v)
+
+def sage_to_gmp(x):
+    r"""
+    Attempt to convert ``x`` from something that SageMath understand to
+    something that the constructor of renf_elem_class understands.
+
+    Typically, this is the conversion of a SageMath Integer to a mpz_class and
+    such.
+
+    If no such conversion exists, leave the argument unchanged.
+    """
+    try:
+        from gmpy2 import mpz, mpq
+    except ModuleNotFoundError:
+        return x
+
+    if isinstance(x, (tuple, list)):
+        x = [sage_to_gmp(v) for v in x]
+        if not all([isinstance(v, (int, cppyy.gbl.mpz_class, cppyy.gbl.mpq_class)) for v in x]):
+            raise TypeError("Coefficients must be convertible to mpq")
+        x = [cppyy.gbl.mpq_class(v) for v in x]
+        x = cppyy.gbl.std.vector[cppyy.gbl.mpq_class](x)
+    if hasattr(x, '__mpq__'):
+        x = x.__mpq__()
+    if hasattr(x, '__mpz__'):
+        x = x.__mpz__()
+    if isinstance(x, mpz):
+        # we need std.string, or cppyy resolves to the wrong constructor:
+        # https://bitbucket.org/wlav/cppyy/issues/127/string-argument-resolves-incorrectly
+        x = cppyy.gbl.mpz_class(cppyy.gbl.std.string(str(x)))
+    if isinstance(x, mpq):
+        # we need std.string, or cppyy resolves to the wrong constructor:
+        # https://bitbucket.org/wlav/cppyy/issues/127/string-argument-resolves-incorrectly
+        x = cppyy.gbl.mpq_class(cppyy.gbl.std.string(str(x)))
+    return x
 
 eantic.renf_elem = py_make_renf_elem_class

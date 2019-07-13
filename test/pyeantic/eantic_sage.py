@@ -47,5 +47,22 @@ def test_nf():
     K = NumberField(x**3 - x**2 - x - 1, 's', embedding=s)
     L = sage_nf_to_eantic(K)
 
+def test_element():
+    from pyeantic import eantic
+    from sage.all import ZZ, QQ
+    K = eantic.renf('x^2 - 2', 'x', '[1.4142 +/- 0.0001]')
+
+    assert str(eantic.renf_elem(K, [ZZ(2), ZZ(3)])) == "(3*x+2 ~ 6.242641)"
+    assert str(eantic.renf_elem(K, [1/ZZ(2), 1/ZZ(3)])) == "(1/3*x+1/2 ~ 0.971405)"
+
+def test_arithmetic():
+    from pyeantic import eantic
+    from sage.all import ZZ, QQ
+    K = eantic.renf('x^2 - 2', 'x', '[1.4142 +/- 0.0001]')
+    a = K.gen()
+
+    assert (a + ZZ(1)) * (a - ZZ(1)) == (a*a - ZZ(1))
+    assert (a + 1/ZZ(2)) * (a - 1/ZZ(2)) == (a*a - 1/ZZ(4)) 
+
 if __name__ == '__main__':
     sys.exit(pytest.main(sys.argv))
