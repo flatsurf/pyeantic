@@ -62,15 +62,15 @@ AS_IF([test "x$with_sage" != "xno" && test "x$with_pytest" = "xyes"],
       ], [])
 AM_CONDITIONAL([HAVE_SAGE], [test "x$with_sage" = "xyes"])
 
-AC_CONFIG_FILES([Makefile src/Makefile src/pyeantic/Makefile test/Makefile test/pyeantic/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile test/Makefile])
 
 dnl Python's setuptools absolutely want to run in the source directory of the
 dnl module. Since this is incompatible with out-of-tree builds of
 dnl autoconfiscated packages, we have to copy all the Python bits over to the
 dnl build dir manually so that Python can't tell the difference.
-AC_CONFIG_LINKS([src/pyeantic/pyeantic/__init__.py:src/pyeantic/pyeantic/__init__.py
-                 src/pyeantic/pyeantic/cppyy_eantic.py:src/pyeantic/pyeantic/cppyy_eantic.py
-                 src/pyeantic/pyeantic/realalg_conversion.py:src/pyeantic/pyeantic/realalg_conversion.py
-                 src/pyeantic/pyeantic/sage_conversion.py:src/pyeantic/pyeantic/sage_conversion.py])
+AC_CONFIG_LINKS([src/pyeantic/__init__.py:src/pyeantic/__init__.py
+                 src/pyeantic/cppyy_eantic.py:src/pyeantic/cppyy_eantic.py
+                 src/pyeantic/realalg_conversion.py:src/pyeantic/realalg_conversion.py
+                 src/pyeantic/sage_conversion.py:src/pyeantic/sage_conversion.py])
 
 AC_OUTPUT
