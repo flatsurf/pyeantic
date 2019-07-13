@@ -73,15 +73,6 @@ cppyy.py.add_pythonization(enable_arithmetic, "eantic")
 for path in os.environ.get('PYINTERVALXT_INCLUDE','').split(':'):
     if path: cppyy.add_include_path(path)
 
-from .config import libdir
-
-cppyy.cppdef("\n".join([r"""
-#pragma cling add_library_path("%s")
-"""%path for path in libdir]) + """
-#pragma cling load("libeantic")
-#pragma cling load("libeanticxx")
-""")
-
 cppyy.cppdef("""
 #include <e-antic/renfxx.h>
 
