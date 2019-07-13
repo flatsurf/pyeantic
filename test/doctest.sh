@@ -21,7 +21,7 @@
 #####################################################################
 
 # We ignore import errors, so SageMath tests get ignored when SageMath is not present.
-pytest --doctest-modules --doctest-ignore-import-errors ../../src/pyeantic/pyeantic/
+pytest --doctest-modules --doctest-ignore-import-errors ../src/pyeantic/
 ret="$?"
 [[ $ret -eq 5 ]] && exit 0
 exit $ret
