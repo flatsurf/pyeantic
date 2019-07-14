@@ -63,7 +63,7 @@ test:
 
 about:
   home: https://github.com/flatsurf/pyeantic
-  license: LGPL3
+  license: GPL3
   license_file: COPYING
   summary: Python Wrapper for E-ANTIC
 
