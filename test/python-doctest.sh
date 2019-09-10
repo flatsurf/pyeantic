@@ -22,4 +22,4 @@
 
 set -ex
 
-pytest --doctest-modules ../src/pyeantic/
+pytest --doctest-modules --doctest-ignore-import-errors ../src/pyeantic/
