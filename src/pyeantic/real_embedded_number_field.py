@@ -256,7 +256,7 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
         Field.__init__(self, QQ, category=category)
 
         self.register_coercion(self.number_field)
-        self.number_field.register_coercion(CoercionRenfNumberField(self))
+        self.number_field.register_conversion(ConversionNumberFieldRenf(self))
 
     def _repr_(self):
         r"""
@@ -320,10 +320,16 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
     Element = RealEmbeddedNumberFieldElement
 
 
-class CoercionRenfNumberField(Morphism):
+class ConversionNumberFieldRenf(Morphism):
     r"""
-    A coercion from :class:`RealEmbeddedNumberField` to a SageMath
+    A conversion from :class:`RealEmbeddedNumberField` to a SageMath
     ``NumberField``.
+
+    This could be a coercion map since the two number fields are identical.
+    However, having coercions in both directions between parents can lead to
+    surprising behaviour (the parents of some results depend on implementation
+    details of the coercion framework.) It's better to avoid such problems and
+    make the less frequently used coercion a conversion.
 
     EXAMPLES::
 
@@ -334,8 +340,8 @@ class CoercionRenfNumberField(Morphism):
 
     TESTS::
 
-        sage: from pyeantic.real_embedded_number_field import CoercionRenfNumberField
-        sage: isinstance(coercion, CoercionRenfNumberField)
+        sage: from pyeantic.real_embedded_number_field import ConversionNumberFieldRenf
+        sage: isinstance(coercion, ConversionNumberFieldRenf)
         True
 
     """
@@ -344,7 +350,7 @@ class CoercionRenfNumberField(Morphism):
 
     def _call_(self, x):
         r"""
-        Coerce ``x`` into the number field codomain.
+        Convert ``x`` to the codomain.
 
         EXAMPLES::
 
