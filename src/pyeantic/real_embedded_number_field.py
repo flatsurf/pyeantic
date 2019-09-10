@@ -195,7 +195,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
 class RealEmbeddedNumberField(UniqueRepresentation, Field):
     r"""
     See ``RealEmbeddedNumberField`` in ``__init__.py`` for details.
-    r"""
+    """
     @staticmethod
     def __classcall__(cls, embed, category=None):
         r"""
@@ -352,11 +352,11 @@ class CoercionRenfNumberField(Morphism):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: KK = RealEmbeddedNumberField(K)
             sage: a = KK.an_element()
-            sage: coerce(K, a)
+            sage: K(a)
             a
 
         """
-        # Note that Cython would certainly provider a faster path to turn an
+        # Note that Cython would certainly provide a faster path to turn an
         # mpz_class/mpz_t into a SageMath Integer. We should probably change
         # this if it is a bottleneck.
         def zz(mpz):
