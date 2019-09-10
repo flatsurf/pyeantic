@@ -19,3 +19,40 @@
 #####################################################################
 
 from .cppyy_eantic import eantic
+
+def RealEmbeddedNumberField(*args, **kwargs):
+    r"""
+    A number field with an embedding into the reals.
+
+    Unlike the usual ``NumberField`` in SageMath, this uses exact ball
+    arithmetic under the hood which can lead to much better performance in
+    typical applications as they arise in exact classical geometry.
+
+    EXAMPLES:
+
+    We can create an ``RealEmbeddedNumberField`` from a ``NumberField`` with an
+    embedding::
+
+        sage: from pyeantic import RealEmbeddedNumberField
+        sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+        sage: RealEmbeddedNumberField(K)
+        Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
+
+    From an actual embedding::
+
+        sage: K = NumberField(x**2 - 2, 'a')
+        sage: RealEmbeddedNumberField(K.embeddings(AA)[0])
+        Number Field in a with defining polynomial x^2 - 2 with a = -1.414213562373095?
+
+    From a ``renf_class``::
+
+        sage: from pyeantic import eantic
+        sage: K = eantic.renf_class.make("a^2 - 2", "a", "1.4 +/- .1")
+        sage: RealEmbeddedNumberField(K)
+        Traceback (most recent call last):
+        ...
+        NotImplementedError: cannot build a RealEmbeddedNumberField from a renf_class yet
+
+    """
+    from .real_embedded_number_field import RealEmbeddedNumberField
+    return RealEmbeddedNumberField(*args, **kwargs)
