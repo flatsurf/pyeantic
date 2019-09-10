@@ -54,7 +54,7 @@ def sage_nf_elem_to_eantic(K, elem):
 
     EXAMPLES::
 
-        sage: from pyeantic.sage_conversion import sage_nf_to_eantic
+        sage: from pyeantic.sage_conversion import sage_nf_to_eantic, sage_nf_elem_to_eantic
         sage: x = polygen(QQ)
         sage: K = NumberField(x**3 - 3, 'a', embedding=AA(3)**Rational((1,3)))
         sage: L = sage_nf_to_eantic(K)

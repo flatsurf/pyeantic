@@ -22,4 +22,4 @@
 
 set -ex
 
-pytest --doctest-modules ../src/pyeantic/
+sage -t --long --force-lib ../src/pyeantic/
