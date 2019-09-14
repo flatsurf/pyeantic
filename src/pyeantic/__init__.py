@@ -20,6 +20,7 @@
 
 from .cppyy_eantic import eantic
 
+
 def RealEmbeddedNumberField(*args, **kwargs):
     r"""
     A number field with an embedding into the reals.
@@ -49,10 +50,8 @@ def RealEmbeddedNumberField(*args, **kwargs):
         sage: from pyeantic import eantic
         sage: K = eantic.renf_class.make("a^2 - 2", "a", "1.4 +/- .1")
         sage: RealEmbeddedNumberField(K)
-        Traceback (most recent call last):
-        ...
-        NotImplementedError: cannot build a RealEmbeddedNumberField from a renf_class yet
+        Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
 
     """
-    from .real_embedded_number_field import RealEmbeddedNumberField
-    return RealEmbeddedNumberField(*args, **kwargs)
+    from .real_embedded_number_field import RealEmbeddedNumberField as RENF
+    return RENF(*args, **kwargs)

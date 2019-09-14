@@ -2,8 +2,8 @@
 r"""
 Real Embedded Number Fields for SageMath
 
-This wraps e-antic for SageMath providing number fields with less of a focus on
-number theory but fast exact ball arithmetic of the kind that is usually
+This wraps e-antic for SageMath providing number fields with less of a focus
+on number theory but fast exact ball arithmetic of the kind that is usually
 required for classical geometry.
 """
 ######################################################################
@@ -28,8 +28,7 @@ required for classical geometry.
 
 import cppyy
 
-from sage.all import QQ, UniqueRepresentation, ZZ, RR, Fields, Field, RBF, AA, \
-                     Morphism, Hom, SetsWithPartialMaps, NumberField, NumberFields
+from sage.all import QQ, UniqueRepresentation, ZZ, RR, Fields, Field, RBF, AA, Morphism, Hom, SetsWithPartialMaps, NumberField, NumberFields
 from sage.structure.element import FieldElement
 from sage.categories.map import Map
 
@@ -57,14 +56,25 @@ class RealEmbeddedNumberFieldElement(FieldElement):
 
     TESTS::
 
-        sage: from pyeantic.real_embedded_number_field import RealEmbeddedNumberFieldElement
-        sage: isinstance(a, RealEmbeddedNumberFieldElement)
-        True
+        sage: TestSuite(a).run()
 
     """
     renf_elem_class = cppyy.gbl.eantic.renf_elem_class
 
     def __init__(self, parent, value):
+        r"""
+        TESTS::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x^2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: a = K.gen()
+
+            sage: from pyeantic.real_embedded_number_field import RealEmbeddedNumberFieldElement
+            sage: isinstance(a, RealEmbeddedNumberFieldElement)
+            True
+
+        """
         if isinstance(value, cppyy.gbl.eantic.renf_elem_class):
             self.renf_elem = value
         else:
@@ -191,6 +201,37 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             return 0
         return 1
 
+    def __getstate__(self):
+        r"""
+        Return picklable data defining this element.
+
+        EXAMPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: loads(dumps(K.gen())) == K.gen()
+            True
+
+        """
+        return (self.parent(), self.parent().number_field(self))
+
+    def __setstate__(self, state):
+        r"""
+        Restore this element from the unpickled state.
+
+        EXAMPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: loads(dumps(K.one())) == K.one()
+            True
+
+        """
+        self._set_parent(state[0])
+        self.renf_elem = self.parent()(state[1]).renf_elem
+
 
 class RealEmbeddedNumberField(UniqueRepresentation, Field):
     r"""
@@ -208,15 +249,30 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
             sage: L = RealEmbeddedNumberField(L.embeddings(AA)[1])
             sage: M = eantic.renf_class.make("a^2 - 2", "a", "1.4 +/- .1")
             sage: M = RealEmbeddedNumberField(M)
-            Traceback (most recent call last):
-            ...
-            NotImplementedError: cannot build a RealEmbeddedNumberField from a renf_class yet
             sage: K is L
             True
-            sage: K is M # not tested yet
+            sage: K is M
             True
 
         """
+        if isinstance(embed, eantic.renf_class):
+            # Since it is quite annoying to convert an fmpz polynomial, we parse
+            # the printed representation of the renf_class. This is of course
+            # not very robust…
+            import re
+            match = re.match("^NumberField\\(([^,]+), (\\[[^\\]]+\\])\\)$", repr(embed))
+            assert match, "renf_class printed in an unexpected way"
+            minpoly = match.group(1)
+            root = RBF(match.group(2))
+            match = re.match("^\\d*\\*?([^\\^ *]+)[\\^ ]", minpoly)
+            assert match, "renf_class printed leading coefficient in an unexpected way"
+            minpoly = QQ[match.group(1)](minpoly)
+            roots = minpoly.roots(AA, multiplicities=False)
+            roots = [aa for aa in roots if root.endpoints()[0] < aa < root.endpoints()[1]]
+            assert roots, "no real algebraic root matches the approximate root"
+            if len(roots) > 1:
+                raise NotImplementedError("cannot distinguish roots with limited ball field precision")
+            embed = NumberField(minpoly, minpoly.variable_name(), embedding=roots[0])
         if embed in NumberFields():
             if not RR.has_coerce_map_from(embed):
                 raise ValueError("number field must be endowed with an embedding into the reals")
@@ -236,9 +292,7 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
                 raise NotImplementedError("number field must be absolute")
             # We explicitly construct an embedding from the given embedding to
             # make sure that we get a useable key.
-            embed = NumberField(K.polynomial(), K.variable_name(), embedding=AA(embed(K.gen())))
-        elif isinstance(embed, eantic.renf_class):
-            raise NotImplementedError("cannot build a RealEmbeddedNumberField from a renf_class yet")
+            embed = NumberField(K.polynomial().change_variable_name('x'), 'a', embedding=AA(embed(K.gen())))
         else:
             raise TypeError("cannot build RealEmbeddedNumberField from %s" % (type(embed)))
 
@@ -246,6 +300,20 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
         return super(RealEmbeddedNumberField, cls).__classcall__(cls, embed, category)
 
     def __init__(self, embedded, category=None):
+        r"""
+        TESTS::
+
+            sage: from pyeantic import eantic, RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+
+            sage: from pyeantic.real_embedded_number_field import RealEmbeddedNumberField
+            sage: isinstance(K, RealEmbeddedNumberField)
+            True
+
+            sage: TestSuite(K).run()
+
+        """
         self.number_field = embedded
         var = self.number_field.variable_name()
         self.renf = eantic.renf(
@@ -336,7 +404,7 @@ class ConversionNumberFieldRenf(Morphism):
         sage: from pyeantic import RealEmbeddedNumberField
         sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
         sage: KK = RealEmbeddedNumberField(K)
-        sage: coercion = K.coerce_map_from(KK)
+        sage: coercion = K.convert_map_from(KK)
 
     TESTS::
 
@@ -362,14 +430,7 @@ class ConversionNumberFieldRenf(Morphism):
             a
 
         """
-        # Note that Cython would certainly provide a faster path to turn an
-        # mpz_class/mpz_t into a SageMath Integer. We should probably change
-        # this if it is a bottleneck.
-        def zz(mpz):
-            import cppyy
-            return ZZ(cppyy.gbl.boost.lexical_cast[cppyy.gbl.std.string](mpz))
-
-        rational_coefficients = [zz(c) / zz(x.renf_elem.den()) for c in x.renf_elem.num_vector()]
+        rational_coefficients = [ZZ(c.get_str()) / ZZ(x.renf_elem.den().get_str()) for c in x.renf_elem.num_vector()]
         while len(rational_coefficients) < self.domain().number_field.degree():
             rational_coefficients.append(QQ.zero())
         return self.codomain()(rational_coefficients)
