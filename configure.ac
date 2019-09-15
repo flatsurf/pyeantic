@@ -71,6 +71,7 @@ dnl build dir manually so that Python can't tell the difference.
 AC_CONFIG_LINKS([src/pyeantic/__init__.py:src/pyeantic/__init__.py
                  src/pyeantic/cppyy_eantic.py:src/pyeantic/cppyy_eantic.py
                  src/pyeantic/realalg_conversion.py:src/pyeantic/realalg_conversion.py
+                 src/pyeantic/real_embedded_number_field.py:src/pyeantic/real_embedded_number_field.py
                  src/pyeantic/sage_conversion.py:src/pyeantic/sage_conversion.py])
 
 AC_OUTPUT
