@@ -22,4 +22,5 @@
 
 set -ex
 
-pytest --doctest-modules --doctest-ignore-import-errors ../src/pyeantic/
+TARGETS=`grep -l '>>> ' ../src/pyeantic/*.py`
+pytest --doctest-modules --doctest-ignore-import-errors $TARGETS

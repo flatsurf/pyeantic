@@ -22,4 +22,5 @@
 
 set -ex
 
-sage -t --long --force-lib ../src/pyeantic/
+TARGETS=`grep -l 'sage: ' ../src/pyeantic/*.py`
+sage -t --long --force-lib $TARGETS
