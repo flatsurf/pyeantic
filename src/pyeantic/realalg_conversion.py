@@ -24,10 +24,7 @@ See https://github.com/MarkCBell/realalg
 #  along with pyeantic. If not, see <https://www.gnu.org/licenses/>.
 #####################################################################
 
-try:
-    import realalg
-except ImportError:
-    raise ImportError("realalg_conversion requires realalg")
+import realalg
 
 import numbers
 from .cppyy_eantic import eantic

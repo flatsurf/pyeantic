@@ -1,3 +1,8 @@
+r"""
+Python Wrappers for E-ANTIC
+
+>>> import pyeantic
+"""
 ######################################################################
 #  This file is part of pyeantic.
 #

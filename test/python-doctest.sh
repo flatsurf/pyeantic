@@ -22,5 +22,5 @@
 
 set -ex
 
-TARGETS=`grep -l '>>> ' ../src/pyeantic/*.py`
-pytest --doctest-modules --doctest-ignore-import-errors $TARGETS
+TARGETS=`grep -l '>>> ' ../src/pyeantic/*.py | grep -v realalg`
+pytest --doctest-modules $TARGETS

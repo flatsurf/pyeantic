@@ -1,7 +1,10 @@
 if HAVE_SAGE
   MAYBE_SAGE = eantic_sage.py sage-doctest.sh
 endif
-TESTS = renf.py renf_elem.py python-doctest.sh ${MAYBE_SAGE}
+if HAVE_REALALG
+  MAYBE_REALALG = realalg-doctest.sh
+endif
+TESTS = renf.py renf_elem.py python-doctest.sh ${MAYBE_SAGE} ${MAYBE_REALALG}
 EXTRA_DIST = $(TESTS) eantic_sage.py
 
 AM_TESTS_ENVIRONMENT = . $(builddir)/test-env.sh;
