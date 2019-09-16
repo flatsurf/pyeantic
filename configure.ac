@@ -62,6 +62,17 @@ AS_IF([test "x$with_sage" != "xno" && test "x$with_pytest" = "xyes"],
       ], [])
 AM_CONDITIONAL([HAVE_SAGE], [test "x$with_sage" = "xyes"])
 
+dnl We do not need realalg to build a converter for realalg but we need it to test.
+AC_ARG_WITH([realalg], AS_HELP_STRING([--without-realalg], [Do not run realalg tests]))
+AS_IF([test "x$with_realalg" != "xno" && test "$x$with_pytest" = "$xyes"],
+      [
+       with_realalg=yes
+       AC_MSG_CHECKING([for realalg module])
+       AS_IF([$PYTHON -c 'import realalg'], , AC_MSG_ERROR([realalg for make check not found; run --without-realalg to disable realalg tests in make check]))
+       AC_MSG_RESULT([yes])
+      ], [])
+AM_CONDITIONAL([HAVE_REALALG], [test "x$with_realalg" = "xyes"])
+
 AC_CONFIG_FILES([Makefile src/Makefile test/Makefile])
 
 dnl Python's setuptools absolutely want to run in the source directory of the
@@ -71,6 +82,7 @@ dnl build dir manually so that Python can't tell the difference.
 AC_CONFIG_LINKS([src/pyeantic/__init__.py:src/pyeantic/__init__.py
                  src/pyeantic/cppyy_eantic.py:src/pyeantic/cppyy_eantic.py
                  src/pyeantic/realalg_conversion.py:src/pyeantic/realalg_conversion.py
+                 src/pyeantic/real_embedded_number_field.py:src/pyeantic/real_embedded_number_field.py
                  src/pyeantic/sage_conversion.py:src/pyeantic/sage_conversion.py])
 
 AC_OUTPUT

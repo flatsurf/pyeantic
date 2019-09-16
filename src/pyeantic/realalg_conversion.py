@@ -24,10 +24,7 @@ See https://github.com/MarkCBell/realalg
 #  along with pyeantic. If not, see <https://www.gnu.org/licenses/>.
 #####################################################################
 
-try:
-    import realalg
-except ImportError:
-    raise ImportError("realalg_conversion requires realalg")
+import realalg
 
 import numbers
 from .cppyy_eantic import eantic
@@ -53,7 +50,7 @@ def realalg_nf_to_eantic(K, name='a'):
 
     >>> import realalg
     >>> from pyeantic.realalg_conversion import realalg_nf_to_eantic
-    >>> R = realalg.RealNumberField([-2,0,1])
+    >>> R = realalg.RealNumberField([-2,0,1])  # random output as it prints a deprecation warning in SageMath
     >>> realalg_nf_to_eantic(R)
     NumberField(a^2 - 2, [1.4142135...])
     >>> R = realalg.RealNumberField([-13,3,0,0,1])

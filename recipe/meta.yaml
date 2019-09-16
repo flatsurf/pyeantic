@@ -48,6 +48,8 @@ requirements:
     - pytest
     # We want to run our optional SageMath tests
     - sage
+    # We need pip so SageMath's installed_packages() works, see https://github.com/conda-forge/sage-feedstock/pull/46
+    - pip
   run:
     - cppyy
     - boost-cpp
