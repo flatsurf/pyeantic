@@ -51,7 +51,7 @@ cppyy.py.add_pythonization(pretty_print, "eantic")
 
 def enable_arithmetic(proxy, name):
     if name in ["renf_elem_class"]:
-        for (n, op) in [('add', ord('+')), ('sub', ord('-')), ('mul', ord('*')), ('div', ord('/'))]:
+        for (n, op) in [('add', ord('+')), ('sub', ord('-')), ('mul', ord('*')), ('truediv', ord('/'))]:
             def cppname(x):
                 # some types such as int do not have a __cppname__; there might
                 # be a better way to get their cppname but this seems to work

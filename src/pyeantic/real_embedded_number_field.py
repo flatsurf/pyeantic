@@ -146,9 +146,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             (1/2*a ~ 0.707107)
 
         """
-        return self.parent()(
-            self.parent().number_field(self) /
-            self.parent().number_field(other))
+        return self.parent()(self.renf_elem / other.renf_elem)
 
     def _neg_(self):
         r"""
