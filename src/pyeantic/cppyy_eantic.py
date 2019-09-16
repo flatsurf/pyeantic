@@ -1,3 +1,16 @@
+r"""
+Make e-antic accessible from Python through cppyy
+
+EXAMPLES::
+
+>>> from pyeantic import eantic
+>>> K = eantic.renf("x^2 - 2", "x", "[1.4 +/- 1]")
+>>> x = eantic.renf_elem(K, "x"); x
+(x ~ 1.414214)
+>>> x + 2
+(x+2 ~ 3.414214)
+
+"""
 # -*- coding: utf-8 -*-
 ######################################################################
 #  This file is part of pyeantic.
@@ -31,19 +44,6 @@ if os.environ.get('PYEANTIC_CYSIGNALS', True):
     except ModuleNotFoundError:
         pass
 
-def make_iterable(proxy, name):
-    if hasattr(proxy, 'begin') and hasattr(proxy, 'end'):
-        if not hasattr(proxy, '__iter__'):
-            def iter(self):
-                i = self.begin()
-                while i != self.end():
-                    yield i.__deref__()
-                    i.__preinc__()
-
-            proxy.__iter__ = iter
-
-cppyy.py.add_pythonization(make_iterable, "eantic")
-
 def pretty_print(proxy, name):
     proxy.__repr__ = proxy.__str__
 
@@ -51,26 +51,27 @@ cppyy.py.add_pythonization(pretty_print, "eantic")
 
 def enable_arithmetic(proxy, name):
     if name in ["renf_elem_class"]:
-        for (n, op) in [('add', ord('+')), ('sub', ord('-')), ('mul', ord('*')), ('truediv', ord('/'))]:
-            def cppname(x):
-                # some types such as int do not have a __cppname__; there might
-                # be a better way to get their cppname but this seems to work
-                # fine for the types we're using at least.
-                return type(x).__cppname__ if hasattr(type(x), '__cppname__') else type(x).__name__
-            def binary(lhs, rhs, op = op):
-                lhs = sage_to_gmp(lhs)
-                rhs = sage_to_gmp(rhs)
-                return cppyy.gbl.eantic.boost_binary[cppname(lhs), cppname(rhs), op](lhs, rhs)
-            def inplace(lhs, *args, **kwargs): raise NotImplementedError("inplace operators are not supported yet")
-            setattr(proxy, "__%s__"%n, binary)
-            setattr(proxy, "__r%s__"%n, binary)
-            setattr(proxy, "__i%s__"%n, inplace)
-        setattr(proxy, "__neg__", lambda self: cppyy.gbl.eantic.minus(self))
+        for (op, infix) in [('add', '+'), ('sub', '-'), ('mul', '*'), ('truediv', '/')]:
+            python_op = "__%s__" % (op,)
+            python_rop = "__r%s__" % (op,)
+
+            implementation = getattr(cppyy.gbl.eantic.cppyy, op)
+            def binary(lhs, rhs, implementation=implementation):
+                lhs, rhs = for_eantic(lhs), for_eantic(rhs)
+                return implementation[type(lhs), type(rhs)](lhs, rhs)
+            def rbinary(rhs, lhs, implementation=implementation):
+                lhs, rhs = for_eantic(lhs), for_eantic(rhs)
+                return implementation[type(lhs), type(rhs)](lhs, rhs)
+
+            setattr(proxy, python_op, binary)
+            setattr(proxy, python_rop, rbinary)
+
+        setattr(proxy, "__neg__", lambda self: cppyy.gbl.eantic.cppyy.neg(self))
         setattr(proxy, "__pow__", lambda self, n: cppyy.gbl.eantic.pow(self, n))
 
 cppyy.py.add_pythonization(enable_arithmetic, "eantic")
 
-for path in os.environ.get('PYINTERVALXT_INCLUDE','').split(':'):
+for path in os.environ.get('PYEANTIC_INCLUDE','').split(':'):
     if path: cppyy.add_include_path(path)
 
 cppyy.cppdef("""
@@ -83,28 +84,19 @@ std::ostream &operator<<(std::ostream &, const renf_elem_class &);
 }  // namespace eantic
 
 namespace eantic {
-// cppyy does not see the operators that come out of boost/operators.hpp.
-// Why exactly is not clear to me at the moment. Since they are defined as
-// non-template friends inside the template classes such as addable<>, we can
-// not explicitly declare them like we did with the operator<< below.
-template <typename S, typename T, char op>
-auto boost_binary(const S &lhs, const T &rhs) {
-  if constexpr (op == '+')
-    return lhs + rhs;
-  else if constexpr (op == '-')
-    return lhs - rhs;
-  else if constexpr (op == '*')
-    return lhs * rhs;
-  else if constexpr (op == '/')
-    return lhs / rhs;
-  else {
-    static_assert(false_v<op>, "operator not implemented");
-  }
-}
+namespace cppyy {
+// cppyy does not see the operators provided by boost::operators so we provide
+// something to make them explicit here:
+template <typename S, typename T>
+auto add(const S& lhs, const T& rhs) { return lhs + rhs; }
+template <typename S, typename T>
+auto sub(const S& lhs, const T& rhs) { return lhs - rhs; }
+template <typename S, typename T>
+auto mul(const S& lhs, const T& rhs) { return lhs * rhs; }
+template <typename S, typename T>
+auto truediv(const S& lhs, const T& rhs) { return lhs / rhs; }
 template <typename T>
-T minus(const T &lhs) {
-  return -lhs;
-}
+auto neg(const T& value) { return -value; }
 
 template <typename T>
 auto make_renf_elem_class(const T& t) {
@@ -116,6 +108,7 @@ auto make_renf_elem_class_with_parent(const std::shared_ptr<renf_class> K, const
     return renf_elem_class(K, t);
 }
 
+}  // namespace cppyy
 }  // namespace eantic
 """)
 
@@ -126,20 +119,20 @@ eantic.renf = eantic.renf_class.make
 # cppyy is confused by template resolution, see
 # https://bitbucket.org/wlav/cppyy/issues/119/templatized-constructor-is-ignored
 # and https://github.com/flatsurf/pyeantic/issues/10
-def py_make_renf_elem_class(*args):
+def make_renf_elem_class(*args):
     if len(args) == 1:
         v = args[0]
         if isinstance(v, eantic.renf_class):
             return eantic.renf_elem_class(v)
         else:
-            v = sage_to_gmp(v)
-            return eantic.make_renf_elem_class(v)
+            v = for_eantic(v)
+            return eantic.cppyy.make_renf_elem_class(v)
     elif len(args) == 2:
         K, v = args
-        v = sage_to_gmp(v)
-        return eantic.make_renf_elem_class_with_parent[type(v)](K, v)
+        v = for_eantic(v)
+        return eantic.cppyy.make_renf_elem_class_with_parent[type(v)](K, v)
 
-def sage_to_gmp(x):
+def for_eantic(x):
     r"""
     Attempt to convert ``x`` from something that SageMath understand to
     something that the constructor of renf_elem_class understands.
@@ -149,13 +142,10 @@ def sage_to_gmp(x):
 
     If no such conversion exists, leave the argument unchanged.
     """
-    try:
-        from gmpy2 import mpz, mpq
-    except ModuleNotFoundError:
+    if isinstance(x, (int, eantic.renf_elem_class, cppyy.gbl.mpz_class, cppyy.gbl.mpq_class)):
         return x
-
     if isinstance(x, (tuple, list)):
-        x = [sage_to_gmp(v) for v in x]
+        x = [for_eantic(v) for v in x]
         if not all([isinstance(v, (int, cppyy.gbl.mpz_class, cppyy.gbl.mpq_class)) for v in x]):
             raise TypeError("Coefficients must be convertible to mpq")
         x = [cppyy.gbl.mpq_class(v) for v in x]
@@ -164,6 +154,12 @@ def sage_to_gmp(x):
         x = x.__mpq__()
     if hasattr(x, '__mpz__'):
         x = x.__mpz__()
+
+    try:
+        from gmpy2 import mpz, mpq
+    except ModuleNotFoundError:
+        return x
+
     if isinstance(x, mpz):
         # we need std.string, or cppyy resolves to the wrong constructor:
         # https://bitbucket.org/wlav/cppyy/issues/127/string-argument-resolves-incorrectly
@@ -174,4 +170,4 @@ def sage_to_gmp(x):
         x = cppyy.gbl.mpq_class(cppyy.gbl.std.string(str(x)))
     return x
 
-eantic.renf_elem = py_make_renf_elem_class
+eantic.renf_elem = make_renf_elem_class
