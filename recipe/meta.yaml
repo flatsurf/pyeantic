@@ -18,8 +18,6 @@ build:
   string: {{ build_string }}
   # eantic is not available for Windows
   skip: True  # [win]
-  # compiler(cxx) is clang4 on OSX which lacks some C++ features
-  skip: True  # [osx]
   # this is a pure Python package (though it depends on non-Python libraries through cppyy)
   noarch: python
   script:
