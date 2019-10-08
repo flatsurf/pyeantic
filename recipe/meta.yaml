@@ -54,15 +54,25 @@ requirements:
     # This is probably due to recent bugs in conda-build (mid 2019)
     - e-antic 1.*
 
+outputs:
+  - name: pyeantic
+    script: install.sh
+    requirements:
+      - python
+      - cppyy
+      - e-antic 1.*
+      - boost-cpp
+{%- if not build_flavour %}
+    test:
+      imports:
+        - pyeantic
+{% endif %}
+
+
+
 {%- if build_flavour %}
 features:
   - {{ build_flavour }}
-{% endif %}
-
-{%- if not build_flavour %}
-test:
-  imports:
-    - pyeantic
 {% endif %}
 
 about:
