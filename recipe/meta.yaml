@@ -15,6 +15,8 @@ build:
   string: {{ build_string }}
   # eantic & cppyy are not available for Windows
   skip: True  # [win]
+  # eantic is not available on macOS
+  skip: True  # [osx]
   skip: True  # [py<36]
 {%- if build_flavour %}
   # only run non-release checks on Linux/3.7 (unfortunately, the py selector is ignored by conda-smithy.)
