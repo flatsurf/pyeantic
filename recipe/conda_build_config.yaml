@@ -4,3 +4,6 @@ channel_sources:
   - flatsurf,conda-forge,defaults
 cxx_compiler_version:  # [osx]
   - 9.0                # [osx]
+build_flavour:
+  - ""
+  - style
