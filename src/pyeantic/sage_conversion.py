@@ -69,4 +69,4 @@ def sage_nf_elem_to_eantic(K, elem):
 
     """
     from .real_embedded_number_field import RealEmbeddedNumberField
-    return RealEmbeddedNumberField(K)(elem)
+    return RealEmbeddedNumberField(K)(elem).renf_elem
