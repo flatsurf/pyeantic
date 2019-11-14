@@ -6,7 +6,10 @@ channels:
 azure:
   user_or_org: flatsurf
   project_name: conda
-  flavours:
-    - build
-    - valgrind
 channel_name: flatsurf
+skip_render:
+  - README.md
+  - LICENSE.txt
+  - .gitattributes
+  - .gitignore
+  - build-locally.py

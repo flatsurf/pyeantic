@@ -22,5 +22,5 @@
 
 set -ex
 
-TARGETS=`grep -l 'sage: ' ../src/pyeantic/*.py`
-sage -t --long --force-lib $TARGETS
+TARGETS=`grep -l '>>> ' @srcdir@/../src/pyeantic/*.py | grep -v realalg`
+pytest --doctest-modules $TARGETS

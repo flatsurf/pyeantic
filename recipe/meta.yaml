@@ -1,10 +1,7 @@
-# conda-smithy assumes that the build number is >= 1000 when building with the new anaconda compilers,
-# this probably is not important but make_build_number otherwise complains during the build
 # See https://github.com/conda/conda-build/issues/2666 for the missing tag
 {% set version = environ.get('GIT_DESCRIBE_TAG', 'untagged')|string|replace('-','_') %}
-{% set build_number = (environ.get('GIT_DESCRIBE_NUMBER')|int + 1000)|string %}
-{% set build_string = "master_" + build_number %}
-{% set flavour = environ.get('FLAVOUR', 'build')|string %}
+{% set build_number = environ.get('GIT_DESCRIBE_NUMBER', '0') %}
+{% set build_string = "master_" + ((build_flavour + "_") if build_flavour else "") + build_number %}
 
 package:
   name: pyeantic
@@ -16,18 +13,17 @@ source:
 build:
   number: {{ build_number }}
   string: {{ build_string }}
-  # eantic is not available for Windows
+  # eantic & cppyy are not available for Windows
   skip: True  # [win]
-  # this is a pure Python package (though it depends on non-Python libraries through cppyy)
-  noarch: python
-  script:
-    - ./recipe/build-{{ flavour }}.sh
-    # conda-build can currently not copy build-artifacts over to the testing
-    # stage, so we can only run make check if we rebuild everything. Therefore,
-    # we run make check as part of the build in the usual make; make check;
-    # make install order.
-    - ./recipe/test-{{ flavour }}.sh
-    - make install
+  # eantic is not available on macOS
+  skip: True  # [osx]
+  skip: True  # [py<36]
+{%- if build_flavour %}
+  # only run non-release checks on Linux/3.7 (unfortunately, the py selector is ignored by conda-smithy.)
+  skip: True  # [not linux or py<37]
+{% endif %}
+  run_exports:
+    - pyeantic {{ version }}
 
 requirements:
   build:
@@ -36,30 +32,48 @@ requirements:
     # to search for the renfxx library, the C++ wrapper for e-antic
     - {{ compiler('cxx') }}
   host:
-    - python >=3.6
+    - python
     - setuptools
     # We need all runtime dependencies to run tests during the build
     - cppyy
     - boost-cpp
     - e-antic 1.*
+    # enable check-valgrind in ./configure
+    - valgrind >=3.15.0  # [linux]
     # We use pytest for testing
     - pytest
     # We want to run our optional SageMath tests
-    - sage
-    # We need pip so SageMath's installed_packages() works, see https://github.com/conda-forge/sage-feedstock/pull/46
+    - sagelib
     - pip
+    - ipywidgets
+    - sympy
   run:
     - cppyy
     - boost-cpp
     # Strangely run_exports of e-antic is not picked up correctly (it's missing from the package on flatsurf)
     # This is probably due to recent bugs in conda-build (mid 2019)
     - e-antic 1.*
-  run_exports:
-    - pyeantic {{ version }}
 
-test:
-  imports:
-    - pyeantic
+outputs:
+  - name: pyeantic
+    script: install.sh
+    requirements:
+      - python
+      - cppyy
+      - e-antic 1.*
+      - boost-cpp
+{%- if not build_flavour %}
+    test:
+      imports:
+        - pyeantic
+{% endif %}
+
+
+
+{%- if build_flavour %}
+features:
+  - {{ build_flavour }}
+{% endif %}
 
 about:
   home: https://github.com/flatsurf/pyeantic
