@@ -58,11 +58,6 @@ requirements:
 outputs:
   - name: {{ name }}
     script: install.sh
-    requirements:
-      - python
-      - cppyy
-      - e-antic 1.*
-      - boost-cpp
     test:
       imports:
         - pyeantic
