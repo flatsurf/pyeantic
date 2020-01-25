@@ -13,7 +13,7 @@ source:
 
 build:
   number: {{ build_number }}
-  string: py{{ python }}_{{ build_number }}
+  string: {{ target }}_py{{ python }}_{{ build_number }}
   # e-antic & cppyy are not available for Windows, https://github.com/conda-forge/e-antic-feedstock/issues/6
   skip: True  # [win]
   # e-antic is not available on macOS, https://github.com/flatsurf/e-antic-feedstock/pull/3
