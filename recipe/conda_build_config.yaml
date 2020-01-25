@@ -5,3 +5,5 @@ channel_sources:
 target:
   - release
   - test
+name:
+  - pyeantic
