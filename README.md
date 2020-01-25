@@ -1,7 +1,4 @@
-[![Linux](https://dev.azure.com/flatsurf/conda/_apis/build/status/flatsurf.pyeantic?branchName=master&jobName=linux&configuration=linux%20build_linux_)](https://dev.azure.com/flatsurf/conda/_build/latest?definitionId=&branchName=master)
-![OSX disabled](https://img.shields.io/badge/OSX-disabled-lightgrey.svg)
-![Windows disabled](https://img.shields.io/badge/Windows-disabled-lightgrey.svg)
-![ppc64le disabled](https://img.shields.io/badge/ppc64le-disabled-lightgrey.svg)
+[![Build Status](https://dev.azure.com/flatsurf/conda/_apis/build/status/flatsurf.pyeantic?branchName=master)](https://dev.azure.com/flatsurf/conda/_build/latest?definitionId=5&branchName=master)
 
 ## Python Wrapper for E-ANTIC
 
