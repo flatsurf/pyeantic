@@ -1,10 +1,11 @@
 # See https://github.com/conda/conda-build/issues/2666 for the missing tag
 {% set version = environ.get('GIT_DESCRIBE_TAG', 'untagged')|string|replace('-','_') %}
 {% set build_number = environ.get('GIT_DESCRIBE_NUMBER', '0') %}
-{% set build_string = "master_" + ((build_flavour + "_") if build_flavour else "") + build_number %}
+{% set name = name or 'pyeantic' %}
+{% set target = target or 'release' %}
 
 package:
-  name: pyeantic
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -12,18 +13,17 @@ source:
 
 build:
   number: {{ build_number }}
-  string: {{ build_string }}
-  # eantic & cppyy are not available for Windows
+  string: {{ target }}_py{{ python }}_{{ build_number }}
+  # e-antic & cppyy are not available for Windows, https://github.com/conda-forge/e-antic-feedstock/issues/6
   skip: True  # [win]
-  # eantic is not available on macOS
+  # e-antic is not available on macOS, https://github.com/flatsurf/e-antic-feedstock/pull/3
   skip: True  # [osx]
+  # we do not support old versions of Python
   skip: True  # [py<36]
-{%- if build_flavour %}
-  # only run non-release checks on Linux/3.7 (unfortunately, the py selector is ignored by conda-smithy.)
-  skip: True  # [not linux or py<37]
-{% endif %}
   run_exports:
-    - pyeantic {{ version }}
+    # We pin exactly since we do not want to bother with incompatibilities in
+    # our nightly builds.
+    - {{ pin_subpackage(name, exact=True) }}
 
 requirements:
   build:
@@ -48,6 +48,7 @@ requirements:
     - ipywidgets
     - sympy
   run:
+    - python
     - cppyy
     - boost-cpp
     # Strangely run_exports of e-antic is not picked up correctly (it's missing from the package on flatsurf)
@@ -55,25 +56,11 @@ requirements:
     - e-antic 1.*
 
 outputs:
-  - name: pyeantic
+  - name: {{ name }}
     script: install.sh
-    requirements:
-      - python
-      - cppyy
-      - e-antic 1.*
-      - boost-cpp
-{%- if not build_flavour %}
     test:
       imports:
         - pyeantic
-{% endif %}
-
-
-
-{%- if build_flavour %}
-features:
-  - {{ build_flavour }}
-{% endif %}
 
 about:
   home: https://github.com/flatsurf/pyeantic

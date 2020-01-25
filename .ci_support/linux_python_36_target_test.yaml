@@ -1,7 +1,5 @@
 boost_cpp:
 - 1.70.0
-build_flavour:
-- style
 channel_sources:
 - flatsurf,conda-forge,defaults
 channel_targets:
@@ -12,6 +10,8 @@ cxx_compiler_version:
 - '7'
 docker_image:
 - condaforge/linux-anvil-comp7
+name:
+- pyeantic
 pin_run_as_build:
   boost-cpp:
     max_pin: x.x.x
@@ -20,3 +20,5 @@ pin_run_as_build:
     max_pin: x.x
 python:
 - '3.6'
+target:
+- test
