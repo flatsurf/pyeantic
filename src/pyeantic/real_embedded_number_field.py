@@ -98,7 +98,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: K.gen() + 1
-            (a+1 ~ 2.414214)
+            (a+1 ~ 2.4142136)
 
         """
         return self.parent()(self.renf_elem + other.renf_elem)
@@ -113,7 +113,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: K.gen() - 1
-            (a-1 ~ 0.414214)
+            (a-1 ~ 0.41421356)
 
         """
         return self.parent()(self.renf_elem - other.renf_elem)
@@ -143,7 +143,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: 1 / K.gen()
-            (1/2*a ~ 0.707107)
+            (1/2*a ~ 0.70710678)
 
         """
         return self.parent()(self.renf_elem / other.renf_elem)
@@ -158,7 +158,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: -K.gen()
-            (-a ~ -1.414214)
+            (-a ~ -1.4142136)
 
         """
         return self.parent()(-self.renf_elem)
@@ -173,7 +173,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: K.gen()
-            (a ~ 1.414214)
+            (a ~ 1.4142136)
 
         """
         return repr(self.renf_elem)
@@ -367,7 +367,7 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: K.an_element()
-            (a ~ 1.414214)
+            (a ~ 1.4142136)
 
         """
         return self(self.number_field.an_element())
@@ -383,7 +383,7 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: K.gen()
-            (a ~ 1.414214)
+            (a ~ 1.4142136)
 
         """
         return self(self.number_field.gen())
