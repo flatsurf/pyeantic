@@ -28,7 +28,7 @@ required for classical geometry.
 
 import cppyy
 
-from sage.all import QQ, UniqueRepresentation, ZZ, RR, Fields, Field, RBF, AA, Morphism, Hom, SetsWithPartialMaps, NumberField, NumberFields
+from sage.all import QQ, UniqueRepresentation, ZZ, RR, Fields, Field, RBF, AA, Morphism, Hom, SetsWithPartialMaps, NumberField, NumberFields, RealBallField
 from sage.structure.element import FieldElement
 from sage.categories.map import Map
 
@@ -261,15 +261,20 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
             match = re.match("^NumberField\\(([^,]+), (\\[[^\\]]+\\])\\)$", repr(embed))
             assert match, "renf_class printed in an unexpected way"
             minpoly = match.group(1)
-            root = RBF(match.group(2))
+            root_str = match.group(2)
             match = re.match("^\\d*\\*?([^\\^ *]+)[\\^ ]", minpoly)
             assert match, "renf_class printed leading coefficient in an unexpected way"
             minpoly = QQ[match.group(1)](minpoly)
-            roots = minpoly.roots(AA, multiplicities=False)
-            roots = [aa for aa in roots if root.endpoints()[0] < aa < root.endpoints()[1]]
-            assert roots, "no real algebraic root matches the approximate root"
-            if len(roots) > 1:
-                raise NotImplementedError("cannot distinguish roots with limited ball field precision")
+            roots = []
+            AA_roots = minpoly.roots(AA, multiplicities=False)
+            for prec in [53, 64, 128, 256]:
+                R = RealBallField(prec)
+                root = R(root_str)
+                roots = [aa for aa in AA_roots if R(aa).overlaps(root)]
+                if len(roots) == 1:
+                    break
+            if len(roots) != 1:
+                raise RuntimeError("cannot distinguish roots with limited ball field precision")
             embed = NumberField(minpoly, minpoly.variable_name(), embedding=roots[0])
         if embed in NumberFields():
             if not RR.has_coerce_map_from(embed):
