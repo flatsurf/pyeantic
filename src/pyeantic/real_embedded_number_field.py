@@ -290,7 +290,7 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
                 raise NotImplementedError("number field must be absolute")
             # We explicitly construct an embedding from the given embedding to
             # make sure that we get a useable key.
-            embed = NumberField(K.polynomial().change_variable_name('x'), 'a', embedding=AA(embed(K.gen())))
+            embed = NumberField(K.polynomial().change_variable_name('x'), K.variable_name(), embedding=AA(embed(K.gen())))
         else:
             raise TypeError("cannot build RealEmbeddedNumberField from %s" % (type(embed)))
 
@@ -301,12 +301,21 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
         r"""
         TESTS::
 
-            sage: from pyeantic import eantic, RealEmbeddedNumberField
+            sage: from pyeantic import RealEmbeddedNumberField
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
 
-            sage: from pyeantic.real_embedded_number_field import RealEmbeddedNumberField
-            sage: isinstance(K, RealEmbeddedNumberField)
+            sage: import pyeantic.real_embedded_number_field
+            sage: isinstance(K, pyeantic.real_embedded_number_field.RealEmbeddedNumberField)
+            True
+
+            sage: TestSuite(K).run()
+
+            sage: from pyeantic import eantic, RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'b', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+
+            sage: isinstance(K, pyeantic.real_embedded_number_field.RealEmbeddedNumberField)
             True
 
             sage: TestSuite(K).run()
@@ -427,6 +436,11 @@ class ConversionNumberFieldRenf(Morphism):
             sage: K(a)
             a
 
+            sage: K = NumberField(x**2 - 2, 'b', embedding=sqrt(AA(2)))
+            sage: KK = RealEmbeddedNumberField(K)
+            sage: b = KK.an_element()
+            sage: K(b)
+            b
         """
         rational_coefficients = [ZZ(c.get_str()) / ZZ(x.renf_elem.den().get_str()) for c in x.renf_elem.num_vector()]
         while len(rational_coefficients) < self.domain().number_field.degree():
