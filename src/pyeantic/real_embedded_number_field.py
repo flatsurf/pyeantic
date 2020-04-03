@@ -28,7 +28,7 @@ required for classical geometry.
 
 import cppyy
 
-from sage.all import QQ, UniqueRepresentation, ZZ, RR, Fields, Field, RBF, AA, Morphism, Hom, SetsWithPartialMaps, NumberField, NumberFields
+from sage.all import QQ, UniqueRepresentation, ZZ, RR, Fields, Field, RBF, AA, Morphism, Hom, SetsWithPartialMaps, NumberField, NumberFields, RealBallField
 from sage.structure.element import FieldElement
 from sage.categories.map import Map
 
@@ -98,7 +98,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: K.gen() + 1
-            (a+1 ~ 2.414214)
+            (a+1 ~ 2.4142136)
 
         """
         return self.parent()(self.renf_elem + other.renf_elem)
@@ -113,7 +113,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: K.gen() - 1
-            (a-1 ~ 0.414214)
+            (a-1 ~ 0.41421356)
 
         """
         return self.parent()(self.renf_elem - other.renf_elem)
@@ -143,7 +143,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: 1 / K.gen()
-            (1/2*a ~ 0.707107)
+            (1/2*a ~ 0.70710678)
 
         """
         return self.parent()(self.renf_elem / other.renf_elem)
@@ -158,7 +158,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: -K.gen()
-            (-a ~ -1.414214)
+            (-a ~ -1.4142136)
 
         """
         return self.parent()(-self.renf_elem)
@@ -173,7 +173,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: K.gen()
-            (a ~ 1.414214)
+            (a ~ 1.4142136)
 
         """
         return repr(self.renf_elem)
@@ -261,15 +261,20 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
             match = re.match("^NumberField\\(([^,]+), (\\[[^\\]]+\\])\\)$", repr(embed))
             assert match, "renf_class printed in an unexpected way"
             minpoly = match.group(1)
-            root = RBF(match.group(2))
+            root_str = match.group(2)
             match = re.match("^\\d*\\*?([^\\^ *]+)[\\^ ]", minpoly)
             assert match, "renf_class printed leading coefficient in an unexpected way"
             minpoly = QQ[match.group(1)](minpoly)
-            roots = minpoly.roots(AA, multiplicities=False)
-            roots = [aa for aa in roots if root.endpoints()[0] < aa < root.endpoints()[1]]
-            assert roots, "no real algebraic root matches the approximate root"
-            if len(roots) > 1:
-                raise NotImplementedError("cannot distinguish roots with limited ball field precision")
+            roots = []
+            AA_roots = minpoly.roots(AA, multiplicities=False)
+            for prec in [53, 64, 128, 256]:
+                R = RealBallField(prec)
+                root = R(root_str)
+                roots = [aa for aa in AA_roots if R(aa).overlaps(root)]
+                if len(roots) == 1:
+                    break
+            if len(roots) != 1:
+                raise RuntimeError("cannot distinguish roots with limited ball field precision")
             embed = NumberField(minpoly, minpoly.variable_name(), embedding=roots[0])
         if embed in NumberFields():
             if not RR.has_coerce_map_from(embed):
@@ -371,7 +376,7 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: K.an_element()
-            (a ~ 1.414214)
+            (a ~ 1.4142136)
 
         """
         return self(self.number_field.an_element())
@@ -387,7 +392,7 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: K.gen()
-            (a ~ 1.414214)
+            (a ~ 1.4142136)
 
         """
         return self(self.number_field.gen())

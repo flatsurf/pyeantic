@@ -52,8 +52,8 @@ def test_element():
     from sage.all import ZZ, QQ
     K = eantic.renf('x^2 - 2', 'x', '[1.4142 +/- 0.0001]')
 
-    assert str(eantic.renf_elem(K, [ZZ(2), ZZ(3)])) == "(3*x+2 ~ 6.242641)"
-    assert str(eantic.renf_elem(K, [1/ZZ(2), 1/ZZ(3)])) == "(1/3*x+1/2 ~ 0.971405)"
+    assert str(eantic.renf_elem(K, [ZZ(2), ZZ(3)])) == "(3*x+2 ~ 6.2426407)"
+    assert str(eantic.renf_elem(K, [1/ZZ(2), 1/ZZ(3)])) == "(1/3*x+1/2 ~ 0.97140452)"
 
 def test_arithmetic():
     from pyeantic import eantic

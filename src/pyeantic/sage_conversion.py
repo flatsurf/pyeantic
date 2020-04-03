@@ -36,7 +36,7 @@ def sage_nf_to_eantic(K):
         sage: L
         NumberField(a^3 - 3, [1.442249570307408382321638310780 +/- 5.49e-31])
         sage: L.gen()
-        (a ~ 1.442250)
+        (a ~ 1.4422496)
 
     """
     from .real_embedded_number_field import RealEmbeddedNumberField
@@ -61,11 +61,11 @@ def sage_nf_elem_to_eantic(K, elem):
         sage: sage_nf_elem_to_eantic(L, Integer(1))
         1
         sage: sage_nf_elem_to_eantic(L, Rational((2,3)))
-        (2/3 ~ 0.666667)
+        (2/3 ~ 0.66666667)
         sage: sage_nf_elem_to_eantic(L, 'a')
-        (a ~ 1.442250)
+        (a ~ 1.4422496)
         sage: sage_nf_elem_to_eantic(L, K.gen())
-        (a ~ 1.442250)
+        (a ~ 1.4422496)
 
     """
     from .real_embedded_number_field import RealEmbeddedNumberField
