@@ -29,7 +29,7 @@ from pyeantic import eantic
 def test_repr():
     K = eantic.renf("x^2 - 3", "x", "1.73 +/- 0.1")
     x = K.gen()
-    assert repr(x) == "(x ~ 1.732051)"
+    assert repr(x) == "(x ~ 1.7320508)"
 
 def test_construct():
     K = eantic.renf("A^3 - 3", "A", "1.44 +/- 0.1")

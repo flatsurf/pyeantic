@@ -6,9 +6,9 @@ EXAMPLES::
 >>> from pyeantic import eantic
 >>> K = eantic.renf("x^2 - 2", "x", "[1.4 +/- 1]")
 >>> x = eantic.renf_elem(K, "x"); x
-(x ~ 1.414214)
+(x ~ 1.4142136)
 >>> x + 2
-(x+2 ~ 3.414214)
+(x+2 ~ 3.4142136)
 
 """
 # -*- coding: utf-8 -*-
