@@ -3,14 +3,13 @@
 # -*- mode: yaml -*-
 
 jobs:
-- job: linux_python_36_target_release
+- job: linux_python_36_cpython_target_release
   pool:
     vmImage: ubuntu-16.04
   variables:
-    CONFIG: linux_python_36_target_release
+    CONFIG: linux_python_36_cpython_target_release
     UPLOAD_PACKAGES: True
     DOCKER_IMAGE: condaforge/linux-anvil-comp7
-  timeoutInMinutes: 360
   steps:
   # configure qemu binfmt-misc running.  This allows us to run docker containers
   # embedded qemu-static
@@ -31,15 +30,14 @@ jobs:
       CODECOV_TOKEN: $(CODECOV_TOKEN)
       ASV_SECRET_KEY: $(ASV_SECRET_KEY)
   - publish: $(System.DefaultWorkingDirectory)/build_artifacts
-    artifact: linux_python_36_target_release
-- job: linux_python_36_target_test
+    artifact: linux_python_36_cpython_target_release
+- job: linux_python_36_cpython_target_test
   pool:
     vmImage: ubuntu-16.04
   variables:
-    CONFIG: linux_python_36_target_test
+    CONFIG: linux_python_36_cpython_target_test
     UPLOAD_PACKAGES: False
     DOCKER_IMAGE: condaforge/linux-anvil-comp7
-  timeoutInMinutes: 360
   steps:
   # configure qemu binfmt-misc running.  This allows us to run docker containers
   # embedded qemu-static
@@ -59,14 +57,13 @@ jobs:
       BINSTAR_TOKEN: $(BINSTAR_TOKEN)
       CODECOV_TOKEN: $(CODECOV_TOKEN)
       ASV_SECRET_KEY: $(ASV_SECRET_KEY)
-- job: linux_python_37_target_release
+- job: linux_python_37_cpython_target_release
   pool:
     vmImage: ubuntu-16.04
   variables:
-    CONFIG: linux_python_37_target_release
+    CONFIG: linux_python_37_cpython_target_release
     UPLOAD_PACKAGES: True
     DOCKER_IMAGE: condaforge/linux-anvil-comp7
-  timeoutInMinutes: 360
   steps:
   # configure qemu binfmt-misc running.  This allows us to run docker containers
   # embedded qemu-static
@@ -87,15 +84,14 @@ jobs:
       CODECOV_TOKEN: $(CODECOV_TOKEN)
       ASV_SECRET_KEY: $(ASV_SECRET_KEY)
   - publish: $(System.DefaultWorkingDirectory)/build_artifacts
-    artifact: linux_python_37_target_release
-- job: linux_python_37_target_test
+    artifact: linux_python_37_cpython_target_release
+- job: linux_python_37_cpython_target_test
   pool:
     vmImage: ubuntu-16.04
   variables:
-    CONFIG: linux_python_37_target_test
+    CONFIG: linux_python_37_cpython_target_test
     UPLOAD_PACKAGES: False
     DOCKER_IMAGE: condaforge/linux-anvil-comp7
-  timeoutInMinutes: 360
   steps:
   # configure qemu binfmt-misc running.  This allows us to run docker containers
   # embedded qemu-static
