@@ -13,3 +13,5 @@ skip_render:
   - .gitattributes
   - .gitignore
   - build-locally.py
+  - .github/workflows/automerge.yml
+  - .github/workflows/webservices.yml
