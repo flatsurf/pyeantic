@@ -6,6 +6,9 @@ channels:
 azure:
   user_or_org: flatsurf
   project_name: conda
+secrets:
+  - CODECOV_TOKEN
+  - ASV_SECRET_KEY
 channel_name: flatsurf
 skip_render:
   - README.md
