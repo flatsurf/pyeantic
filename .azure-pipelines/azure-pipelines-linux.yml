@@ -23,12 +23,13 @@ jobs:
   - script: |
         export CI=azure
         export GIT_BRANCH=$BUILD_SOURCEBRANCHNAME
+        export FEEDSTOCK_NAME=$(basename ${BUILD_REPOSITORY_NAME})
         .scripts/run_docker_build.sh
     displayName: Run docker build
     env:
+      ASV_SECRET_KEY: $(ASV_SECRET_KEY)
       BINSTAR_TOKEN: $(BINSTAR_TOKEN)
       CODECOV_TOKEN: $(CODECOV_TOKEN)
-      ASV_SECRET_KEY: $(ASV_SECRET_KEY)
   - publish: $(System.DefaultWorkingDirectory)/build_artifacts
     artifact: linux_python_36_cpython_target_release
 - job: linux_python_36_cpython_target_test
@@ -51,12 +52,13 @@ jobs:
   - script: |
         export CI=azure
         export GIT_BRANCH=$BUILD_SOURCEBRANCHNAME
+        export FEEDSTOCK_NAME=$(basename ${BUILD_REPOSITORY_NAME})
         .scripts/run_docker_build.sh
     displayName: Run docker build
     env:
+      ASV_SECRET_KEY: $(ASV_SECRET_KEY)
       BINSTAR_TOKEN: $(BINSTAR_TOKEN)
       CODECOV_TOKEN: $(CODECOV_TOKEN)
-      ASV_SECRET_KEY: $(ASV_SECRET_KEY)
 - job: linux_python_37_cpython_target_release
   pool:
     vmImage: ubuntu-16.04
@@ -77,12 +79,13 @@ jobs:
   - script: |
         export CI=azure
         export GIT_BRANCH=$BUILD_SOURCEBRANCHNAME
+        export FEEDSTOCK_NAME=$(basename ${BUILD_REPOSITORY_NAME})
         .scripts/run_docker_build.sh
     displayName: Run docker build
     env:
+      ASV_SECRET_KEY: $(ASV_SECRET_KEY)
       BINSTAR_TOKEN: $(BINSTAR_TOKEN)
       CODECOV_TOKEN: $(CODECOV_TOKEN)
-      ASV_SECRET_KEY: $(ASV_SECRET_KEY)
   - publish: $(System.DefaultWorkingDirectory)/build_artifacts
     artifact: linux_python_37_cpython_target_release
 - job: linux_python_37_cpython_target_test
@@ -105,9 +108,10 @@ jobs:
   - script: |
         export CI=azure
         export GIT_BRANCH=$BUILD_SOURCEBRANCHNAME
+        export FEEDSTOCK_NAME=$(basename ${BUILD_REPOSITORY_NAME})
         .scripts/run_docker_build.sh
     displayName: Run docker build
     env:
+      ASV_SECRET_KEY: $(ASV_SECRET_KEY)
       BINSTAR_TOKEN: $(BINSTAR_TOKEN)
       CODECOV_TOKEN: $(CODECOV_TOKEN)
-      ASV_SECRET_KEY: $(ASV_SECRET_KEY)
