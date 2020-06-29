@@ -1,11 +1,11 @@
-# See https://github.com/conda/conda-build/issues/2666 for the missing tag
-{% set version = environ.get('GIT_DESCRIBE_TAG', 'untagged')|string|replace('-','_') %}
-{% set build_number = environ.get('GIT_DESCRIBE_NUMBER', '0') %}
-{% set name = name or 'pyeantic' %}
-{% set target = target or 'release' %}
+{% set version = environ.get('GIT_DESCRIBE_TAG', 'untagged')| string | replace('-','_') %}
+{% set build_number = environ.get('GIT_DESCRIBE_NUMBER') %}
+{% set action = action or 'release' %}
+{% set py = _python | replace('*', '') | replace(' ', '') | replace('.', '') %}
+{% set test_requirements = action in ["test", "coverage", "benchmark"] %}
 
 package:
-  name: {{ name }}
+  name: pyeantic
   version: {{ version }}
 
 source:
@@ -13,17 +13,15 @@ source:
 
 build:
   number: {{ build_number }}
-  string: {{ target }}_py{{ python | replace("*", "") | replace(" ", "") }}_{{ build_number }}
+  string: py{{ py }}_{{ build_number }}
   # e-antic & cppyy are not available for Windows, https://github.com/conda-forge/e-antic-feedstock/issues/6
   skip: True  # [win]
   # e-antic is not available on macOS, https://github.com/flatsurf/e-antic-feedstock/pull/3
   skip: True  # [osx]
-  # we do not support old versions of Python
-  skip: True  # [py<36]
   run_exports:
     # We pin exactly since we do not want to bother with incompatibilities in
     # our nightly builds.
-    - {{ pin_subpackage(name, exact=True) }}
+    - {{ pin_subpackage("pyeantic", exact=True) }}
 
 requirements:
   build:
@@ -32,12 +30,13 @@ requirements:
     # to search for the renfxx library, the C++ wrapper for e-antic
     - {{ compiler('cxx') }}
   host:
-    - python
+    - python {{ _python }}
     - setuptools
-    # We need all runtime dependencies to run tests during the build
+    # configure is looking for all the runtime dependencies during the build
     - cppyy
     - boost-cpp
     - e-antic 1.*
+{%- if test_requirements %}
     # enable check-valgrind in ./configure
     - valgrind >=3.15.0  # [linux]
     # We use pytest for testing
@@ -47,24 +46,24 @@ requirements:
     - pip
     - ipywidgets
     - sympy
+{%- endif %}
   run:
-    - python
+    - python {{ _python }}
     - cppyy
     - boost-cpp
     # Strangely run_exports of e-antic is not picked up correctly (it's missing from the package on flatsurf)
     # This is probably due to recent bugs in conda-build (mid 2019)
     - e-antic 1.*
 
-outputs:
-  - name: {{ name }}
-    script: install.sh
-    test:
-      imports:
-        - pyeantic
+{%- if action == "release" %}
+test:
+  imports:
+    - pyeantic
+{%- endif %}
 
 about:
   home: https://github.com/flatsurf/pyeantic
-  license: GPL3
+  license: GPL-3.0-or-later
   license_file: COPYING
   summary: Python Wrapper for E-ANTIC
 
@@ -72,3 +71,6 @@ extra:
   recipe-maintainers:
     - saraedum
     - videlec
+  variables:
+    job: {{ job }}
+    action: {{ action }}

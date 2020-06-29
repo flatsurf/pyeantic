@@ -1,3 +1,7 @@
+_python:
+- 3.7.* *_cpython
+action:
+- test
 boost_cpp:
 - 1.70.0
 channel_sources:
@@ -10,15 +14,12 @@ cxx_compiler_version:
 - '7'
 docker_image:
 - condaforge/linux-anvil-comp7
-name:
-- pyeantic
+job:
+- test37
 pin_run_as_build:
   boost-cpp:
     max_pin: x.x.x
-  python:
-    min_pin: x.x
-    max_pin: x.x
-python:
-- 3.7.* *_cpython
-target:
-- release
+zip_keys:
+- - job
+  - action
+  - _python
