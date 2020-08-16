@@ -9,8 +9,8 @@ required for classical geometry.
 ######################################################################
 #  This file is part of pyeantic.
 #
-#        Copyright (C) 2019 Vincent Delecroix
-#        Copyright (C) 2019 Julian Rüth
+#        Copyright (C)      2019 Vincent Delecroix
+#                      2019-2020 Julian Rüth
 #
 #  pyeantic is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Lesser General Public License as published by
@@ -198,6 +198,48 @@ class RealEmbeddedNumberFieldElement(FieldElement):
         if self.renf_elem == other.renf_elem:
             return 0
         return 1
+
+    def _rational_(self):
+        r"""
+        Convert this element to a rational number, if possible.
+
+        EXAMPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: QQ(K.one())
+            1
+            sage: QQ(K.gen())
+            Traceback (most recent call last):
+            ...
+            TypeError: not a rational number
+
+        """
+        if not self.renf_elem.is_rational():
+            raise TypeError("not a rational number")
+        return QQ(str(cppyy.gbl.eantic.cppyy.rational(self.renf_elem)))
+
+    def _integer_(self, *args):
+        r"""
+        Convert this element to an integer, if possible.
+
+        EXAMPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: ZZ(K.one())
+            1
+            sage: ZZ(K.gen())
+            Traceback (most recent call last):
+            ...
+            TypeError: not an  integer
+
+        """
+        if not self.renf_elem.is_integer():
+            raise TypeError("not an integer")
+        return QQ(self).numerator()
 
     def __getstate__(self):
         r"""
