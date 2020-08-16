@@ -215,6 +215,13 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             ...
             TypeError: not a rational number
 
+        TESTS::
+
+            sage: K.one() in QQ
+            True
+            sage: K.gen() not in QQ
+            True
+
         """
         if not self.renf_elem.is_rational():
             raise TypeError("not a rational number")
@@ -235,6 +242,13 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             Traceback (most recent call last):
             ...
             TypeError: not an  integer
+
+        TESTS::
+
+            sage: K.one() in ZZ
+            True
+            sage: K.gen() not in ZZ
+            True
 
         """
         if not self.renf_elem.is_integer():
@@ -452,6 +466,21 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
 
         """
         return self(self.number_field.gen())
+
+    def degree(self):
+        r"""
+        Return the absolute degree of this number field.
+
+        EXAMPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: K.degree()
+            2
+
+        """
+        return self.number_field.degree()
 
     Element = RealEmbeddedNumberFieldElement
 
