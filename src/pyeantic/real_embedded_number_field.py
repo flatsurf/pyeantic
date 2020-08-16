@@ -284,7 +284,7 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
             # We recreate our NumberField from the embedding since number
             # fields with the same embedding might differ by other parameters
             # and therefore do not serve immediately as unique keys.
-            embed = embed.coerce_embedding()
+            embed = AA.coerce_map_from(embed)
         if isinstance(embed, Map):
             K = embed.domain()
             if K not in NumberFields():
@@ -295,9 +295,12 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
                 raise NotImplementedError("number field must be absolute")
             # We explicitly construct an embedding from the given embedding to
             # make sure that we get a useable key.
-            embed = NumberField(K.polynomial().change_variable_name('x'), K.variable_name(), embedding=AA(embed(K.gen())))
+            minpoly = (QQ['x'].gen() - 1) if K is QQ else K.polynomial()
+            minpoly = minpoly.change_variable_name('x')
+            embedding = AA.one() if K is QQ else embed(K.gen())
+            embed = NumberField(minpoly, K.variable_name(), embedding=embedding)
         else:
-            raise TypeError("cannot build RealEmbeddedNumberField from %s" % (type(embed)))
+            raise TypeError("cannot build RealEmbeddedNumberField from embedding %s" % (type(embed)))
 
         category = category or Fields()
         return super(RealEmbeddedNumberField, cls).__classcall__(cls, embed, category)
@@ -306,7 +309,17 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
         r"""
         TESTS::
 
+            sage: import pyeantic
             sage: from pyeantic import RealEmbeddedNumberField
+
+            sage: K = RealEmbeddedNumberField(QQ)
+            sage: isinstance(K, pyeantic.real_embedded_number_field.RealEmbeddedNumberField)
+            True
+
+            sage: TestSuite(K).run()
+
+        ::
+
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
 
@@ -316,7 +329,8 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
 
             sage: TestSuite(K).run()
 
-            sage: from pyeantic import eantic, RealEmbeddedNumberField
+        ::
+
             sage: K = NumberField(x**2 - 2, 'b', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
 
