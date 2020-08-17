@@ -28,7 +28,7 @@ required for classical geometry.
 
 import cppyy
 
-from sage.all import QQ, UniqueRepresentation, ZZ, RR, Fields, Field, RBF, AA, Morphism, Hom, SetsWithPartialMaps, NumberField, NumberFields, RealBallField
+from sage.all import QQ, UniqueRepresentation, ZZ, RR, Fields, RBF, AA, Morphism, Hom, SetsWithPartialMaps, NumberField, NumberFields, RealBallField, Parent
 from sage.structure.element import FieldElement
 from sage.categories.map import Map
 
@@ -287,7 +287,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
         self.renf_elem = self.parent()(state[1]).renf_elem
 
 
-class RealEmbeddedNumberField(UniqueRepresentation, Field):
+class RealEmbeddedNumberField(UniqueRepresentation, Parent):
     r"""
     See ``RealEmbeddedNumberField`` in ``__init__.py`` for details.
     """
@@ -395,6 +395,28 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
 
             sage: TestSuite(K).run()
 
+        ::
+
+            sage: K.an_element() in K.number_field
+            True
+            sage: K.an_element() in QQbar
+            True
+            sage: K.number_field.an_element() in K
+            True
+            sage: 1 in K
+            True
+
+        ::
+
+            sage: type(K.one() - K.number_field.one())
+            <class 'sage.rings.number_field.number_field_element_quadratic.NumberFieldElement_quadratic'>
+            sage: type(K.number_field.one() - K.one())
+            <class 'sage.rings.number_field.number_field_element_quadratic.NumberFieldElement_quadratic'>
+            sage: type(K.one() - 1)
+            <class 'pyeantic.real_embedded_number_field.RealEmbeddedNumberField_with_category.element_class'>
+            sage: type(1 - K.one())
+            <class 'pyeantic.real_embedded_number_field.RealEmbeddedNumberField_with_category.element_class'>
+
         """
         self.number_field = embedded
         var = self.number_field.variable_name()
@@ -403,10 +425,23 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
             var,
             str(RBF(self.number_field.gen())))
 
-        Field.__init__(self, QQ, category=category)
+        Parent.__init__(self, QQ, category=category)
 
-        self.register_coercion(self.number_field)
-        self.number_field.register_conversion(ConversionNumberFieldRenf(self))
+        # It is usually not a good idea to introduce cycles in the coercion
+        # framework: when performing a + b with a in A and b in B, it's a bit
+        # random whether the result will be in A or in B. So we make the map
+        # into the SageMath number field a coercion since it makes lots of
+        # stuff work that depends on having coercions to other number fields
+        # and AA, QQbar, …. We register this coercion as an embedding so
+        # transitive coercions are detected by the coercion framework such as
+        # the coercion into AA.
+        self.register_embedding(CoercionNumberFieldRenf(self))
+
+        self.register_conversion(self.number_field)
+
+        # Allow coercion of rationals and integers so arithmetic with integers
+        # works on the SageMath prompt.
+        self.register_coercion(QQ)
 
     def _repr_(self):
         r"""
@@ -485,16 +520,10 @@ class RealEmbeddedNumberField(UniqueRepresentation, Field):
     Element = RealEmbeddedNumberFieldElement
 
 
-class ConversionNumberFieldRenf(Morphism):
+class CoercionNumberFieldRenf(Morphism):
     r"""
-    A conversion from :class:`RealEmbeddedNumberField` to a SageMath
+    A coercion from :class:`RealEmbeddedNumberField` to a SageMath
     ``NumberField``.
-
-    This could be a coercion map since the two number fields are identical.
-    However, having coercions in both directions between parents can lead to
-    surprising behaviour (the parents of some results depend on implementation
-    details of the coercion framework.) It's better to avoid such problems and
-    make the less frequently used coercion a conversion.
 
     EXAMPLES::
 
@@ -505,8 +534,8 @@ class ConversionNumberFieldRenf(Morphism):
 
     TESTS::
 
-        sage: from pyeantic.real_embedded_number_field import ConversionNumberFieldRenf
-        sage: isinstance(coercion, ConversionNumberFieldRenf)
+        sage: from pyeantic.real_embedded_number_field import CoercionNumberFieldRenf
+        sage: isinstance(coercion, CoercionNumberFieldRenf)
         True
 
     """
@@ -536,3 +565,20 @@ class ConversionNumberFieldRenf(Morphism):
         while len(rational_coefficients) < self.domain().number_field.degree():
             rational_coefficients.append(QQ.zero())
         return self.codomain()(rational_coefficients)
+
+    def section(self):
+        r"""
+        Return the inverse of this coercion.
+
+        EXAMPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: KK = RealEmbeddedNumberField(K)
+            sage: K.coerce_map_from(KK).section()
+            Generic morphism:
+              From: Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
+              To:   Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
+
+        """
+        return self.codomain().convert_map_from(self.domain())
