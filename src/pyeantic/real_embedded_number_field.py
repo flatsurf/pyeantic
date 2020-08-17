@@ -517,6 +517,26 @@ class RealEmbeddedNumberField(UniqueRepresentation, Parent):
         """
         return self.number_field.degree()
 
+    def _pseudo_fraction_field(self):
+        r"""
+        Return the fraction field of this number field, i.e., this number field.
+
+        EXAMPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: K._pseudo_fraction_field() is K
+            True
+
+        TESTS::
+
+            sage: K.gen() / 2
+            (1/2*a ~ 0.70710678)
+
+        """
+        return self.fraction_field()
+
     Element = RealEmbeddedNumberFieldElement
 
 
