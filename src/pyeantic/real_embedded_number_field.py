@@ -28,7 +28,7 @@ required for classical geometry.
 
 import cppyy
 
-from sage.all import QQ, UniqueRepresentation, ZZ, RR, Fields, RBF, AA, Morphism, Hom, SetsWithPartialMaps, NumberField, NumberFields, RealBallField, Parent
+from sage.all import QQ, UniqueRepresentation, ZZ, RR, Fields, RBF, AA, Morphism, Hom, SetsWithPartialMaps, NumberField, NumberFields, RealBallField, CommutativeRing
 from sage.structure.element import FieldElement
 from sage.categories.map import Map
 
@@ -287,7 +287,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
         self.renf_elem = self.parent()(state[1]).renf_elem
 
 
-class RealEmbeddedNumberField(UniqueRepresentation, Parent):
+class RealEmbeddedNumberField(UniqueRepresentation, CommutativeRing):
     r"""
     See ``RealEmbeddedNumberField`` in ``__init__.py`` for details.
     """
@@ -425,7 +425,7 @@ class RealEmbeddedNumberField(UniqueRepresentation, Parent):
             var,
             str(RBF(self.number_field.gen())))
 
-        Parent.__init__(self, QQ, category=category)
+        CommutativeRing.__init__(self, QQ, category=category)
 
         # It is usually not a good idea to introduce cycles in the coercion
         # framework: when performing a + b with a in A and b in B, it's a bit
@@ -517,25 +517,41 @@ class RealEmbeddedNumberField(UniqueRepresentation, Parent):
         """
         return self.number_field.degree()
 
-    def _pseudo_fraction_field(self):
+    def is_field(self, *args, **kwargs):
         r"""
-        Return the fraction field of this number field, i.e., this number field.
+        Return whether this number field is a field, i.e., return ``True``.
 
         EXAMPLES::
 
             sage: from pyeantic import RealEmbeddedNumberField
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
-            sage: K._pseudo_fraction_field() is K
+            sage: K.is_field()
             True
 
-        TESTS::
+        """
+        return True
 
-            sage: K.gen() / 2
-            (1/2*a ~ 0.70710678)
+    def __pow__(self, n, _ = None):
+        r"""
+        Return the vector space of dimension ``n`` over this field.
+
+        EXAMPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: K^3
+            Vector space of dimension 3 over Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
 
         """
-        return self.fraction_field()
+        if isinstance(n, tuple):
+            m, n = n
+            from sage.all import MatrixSpace
+            return MatrixSpace(self, m, n)
+        else:
+            from sage.all import VectorSpace
+            return VectorSpace(self, n)
 
     Element = RealEmbeddedNumberFieldElement
 
