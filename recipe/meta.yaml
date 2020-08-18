@@ -33,7 +33,7 @@ requirements:
     # configure is looking for all the runtime dependencies during the build
     - cppyy
     - boost-cpp
-    - e-antic 1.*
+    - e-antic >=1.0a master_1110
 {%- if test_requirements %}
     # enable check-valgrind in ./configure
     - valgrind >=3.15.0  # [linux]
@@ -49,9 +49,6 @@ requirements:
     - python {{ _python }}
     - cppyy
     - boost-cpp
-    # Strangely run_exports of e-antic is not picked up correctly (it's missing from the package on flatsurf)
-    # This is probably due to recent bugs in conda-build (mid 2019)
-    - e-antic 1.*
 
 {%- if action == "release" %}
 test:
