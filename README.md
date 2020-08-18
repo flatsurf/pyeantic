@@ -54,7 +54,7 @@ dependencies with conda. Download and install
 ```
 conda config --add channels conda-forge
 conda config --add channels flatsurf # if you want to pull in the latest version of dependencies
-conda create -n pyeantic-build cxx-compiler libtool automake e-antic
+conda create -n pyeantic-build cxx-compiler libtool automake python setuptools cppyy boost-cpp e-antic # to run the tests add: valgrind pytest sagelib pip ipywidgets sympy
 conda activate pyeantic-build
 export CPPFLAGS="-isystem $CONDA_PREFIX/include"
 export CFLAGS="$CPPFLAGS"
