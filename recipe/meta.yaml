@@ -1,4 +1,4 @@
-{% set version = environ.get('GIT_DESCRIBE_TAG', 'untagged')| string | replace('-','_') %}
+{% set version = '1.0.0' %}
 {% set build_number = environ.get('GIT_DESCRIBE_NUMBER') %}
 {% set action = action or 'release' %}
 {% set py = _python | replace('*', '') | replace(' ', '') | replace('.', '') %}
@@ -19,9 +19,7 @@ build:
   # e-antic is not available on macOS, https://github.com/flatsurf/e-antic-feedstock/pull/3
   skip: True  # [osx]
   run_exports:
-    # We pin exactly since we do not want to bother with incompatibilities in
-    # our nightly builds.
-    - {{ pin_subpackage("pyeantic", exact=True) }}
+    - {{ pin_subpackage("pyeantic", max_pin="x" }}
 
 requirements:
   build:
