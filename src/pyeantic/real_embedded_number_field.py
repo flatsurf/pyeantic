@@ -452,10 +452,10 @@ class RealEmbeddedNumberField(UniqueRepresentation, CommutativeRing):
             sage: from pyeantic import RealEmbeddedNumberField
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: RealEmbeddedNumberField(K)
-            Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
+            Real Embedded Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
 
         """
-        return repr(self.number_field)
+        return "Real Embedded %r"%(self.number_field,)
 
     def characteristic(self):
         r"""
@@ -542,7 +542,7 @@ class RealEmbeddedNumberField(UniqueRepresentation, CommutativeRing):
             sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
             sage: K = RealEmbeddedNumberField(K)
             sage: K^3
-            Vector space of dimension 3 over Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
+            Vector space of dimension 3 over Real Embedded Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
 
         """
         if isinstance(n, tuple):
@@ -613,7 +613,7 @@ class CoercionNumberFieldRenf(Morphism):
             sage: KK = RealEmbeddedNumberField(K)
             sage: K.coerce_map_from(KK).section()
             Generic morphism:
-              From: Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
+              From: Real Embedded Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
               To:   Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
 
         """

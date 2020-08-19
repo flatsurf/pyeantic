@@ -42,20 +42,20 @@ def RealEmbeddedNumberField(*args, **kwargs):
         sage: from pyeantic import RealEmbeddedNumberField
         sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
         sage: RealEmbeddedNumberField(K)
-        Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
+        Real Embedded Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
 
     From an actual embedding::
 
         sage: K = NumberField(x**2 - 2, 'a')
         sage: RealEmbeddedNumberField(K.embeddings(AA)[0])
-        Number Field in a with defining polynomial x^2 - 2 with a = -1.414213562373095?
+        Real Embedded Number Field in a with defining polynomial x^2 - 2 with a = -1.414213562373095?
 
     From a ``renf_class``::
 
         sage: from pyeantic import eantic
         sage: K = eantic.renf_class.make("a^2 - 2", "a", "1.4 +/- .1")
         sage: RealEmbeddedNumberField(K)
-        Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
+        Real Embedded Number Field in a with defining polynomial x^2 - 2 with a = 1.414213562373095?
 
     """
     from .real_embedded_number_field import RealEmbeddedNumberField as RENF
