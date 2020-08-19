@@ -8,7 +8,7 @@ This repository implements a Python wrapper for
 
 ## Current Release Info
 
-We build and release this package with every push to the master branch.
+We release this package regularly with [rever](https://regro.github.io/rever-docs/index.html); typically with every push to the master branch.
 
 | Name | Downloads | Version | Platforms |
 | --- | --- | --- | --- |
