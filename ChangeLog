@@ -1,16 +1,23 @@
-CHANGES IN VERSION 1.1.0
-------------------------
+===================
+pyeantic Change Log
+===================
 
-    o Improve printing of RealEmbeddedNumberField to distinguish it from the SageMath NumberField
+.. current developments
 
-CHANGES IN VERSION 1.0.1
-------------------------
+v1.1.0
+====================
 
-    o Fixed version number in configure.ac
+**Changed:**
 
-CHANGES IN VERSION 1.0.0
-------------------------
+* Printing of RealEmbeddedNumberField to distinguish it from the SageMath NumberField
 
-NEW FEATURES
 
-    o Initial Release
+
+v1.0.1
+====================
+
+**Fixed:**
+
+* version number in configure.ac
+
+
