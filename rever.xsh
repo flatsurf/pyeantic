@@ -20,7 +20,7 @@
 import sys
 
 try:
-  input("Are you sure you are on the master branch which is identical to origin/master and there are no pending changes? [ENTER]")
+  input("Are you sure you are on the master branch which is identical to origin/master? [ENTER]")
 except KeyboardInterrupt:
   sys.exit(1)
 
@@ -42,6 +42,7 @@ $ACTIVITIES = [
 $VERSION_BUMP_PATTERNS = [
     ('configure.ac', r'AC_INIT', r'AC_INIT([pyeantic], [$VERSION], [julian.rueth@fsfe.org])'),
     ('recipe/meta.yaml', r"\{% set version =", r"{% set version = '$VERSION' %}"),
+    ('recipe/meta.yaml', r"\{% set build_number =", r"{% set build_number = '0' %}"),
 ]
 
 $CHANGELOG_FILENAME = 'ChangeLog'
