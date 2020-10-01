@@ -443,6 +443,21 @@ class RealEmbeddedNumberField(UniqueRepresentation, CommutativeRing):
         # works on the SageMath prompt.
         self.register_coercion(QQ)
 
+    def random_element(self):
+        r"""
+        Return a randomly generated element in this number field.
+
+        EXAMPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: K.random_element().parent() is K
+            True
+
+        """
+        return self(self.number_field.random_element())
+
     def _repr_(self):
         r"""
         Return a printable representation of this number field.
