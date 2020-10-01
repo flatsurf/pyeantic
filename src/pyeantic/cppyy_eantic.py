@@ -3,12 +3,22 @@ Make e-antic accessible from Python through cppyy
 
 EXAMPLES::
 
->>> from pyeantic import eantic
->>> K = eantic.renf("x^2 - 2", "x", "[1.4 +/- 1]")
->>> x = eantic.renf_elem(K, "x"); x
-(x ~ 1.4142136)
->>> x + 2
-(x+2 ~ 3.4142136)
+    >>> from pyeantic import eantic
+    >>> K = eantic.renf("x^2 - 2", "x", "[1.4 +/- 1]")
+    >>> x = eantic.renf_elem(K, "x"); x
+    (x ~ 1.4142136)
+    >>> x + 2
+    (x+2 ~ 3.4142136)
+
+TESTS:
+
+Test that objects can be pickled::
+
+    >>> from pickle import loads, dumps
+    >>> loads(dumps(x)) == x
+    True
+    >>> loads(dumps(x.parent())) is x.parent()
+    True
 
 """
 # -*- coding: utf-8 -*-
@@ -44,10 +54,11 @@ if os.environ.get('PYEANTIC_CYSIGNALS', True):
     except ModuleNotFoundError:
         pass
 
-def pretty_print(proxy, name):
-    proxy.__repr__ = proxy.__str__
+from cppyythonizations.printing import enable_pretty_printing
+from cppyythonizations.pickling.cereal import enable_cereal
 
-cppyy.py.add_pythonization(pretty_print, "eantic")
+cppyy.py.add_pythonization(enable_pretty_printing, "eantic")
+cppyy.py.add_pythonization(lambda proxy, name: enable_cereal(proxy, name, ["e-antic/renfxx_cereal.h"]), "eantic")
 
 def enable_arithmetic(proxy, name):
     if name in ["renf_elem_class"]:
