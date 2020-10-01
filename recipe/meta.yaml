@@ -1,4 +1,4 @@
-{% set version = '1.2.0' %}
+{% set version = '1.2.1' %}
 {% set build_number = '0' %}
 {% set action = action or 'release' %}
 {% set py = _python | replace('*', '') | replace(' ', '') | replace('.', '') %}
@@ -32,7 +32,6 @@ requirements:
     - setuptools
     # configure is looking for all the runtime dependencies during the build
     - cppyy
-    - cppyythonizations
     - boost-cpp
     - e-antic >=1.0.0rc3
 {%- if test_requirements %}
@@ -40,6 +39,7 @@ requirements:
     - valgrind >=3.15.0  # [linux]
     # We use pytest for testing
     - pytest
+    - cppyythonizations
     # We want to run our optional SageMath tests
     - sagelib
     - pip
