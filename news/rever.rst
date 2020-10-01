@@ -1,3 +1,3 @@
-**Added:**
+**Fixed:**
 
-* safety checks for rever deploy script
+* reset build number of conda package with every release
