@@ -4,6 +4,20 @@ pyeantic Change Log
 
 .. current developments
 
+v1.2.0
+====================
+
+**Added:**
+
+* make `renf_class` and `renf_elem_class` serializable as Python pickles
+* new method `RealEmbeddedNumberField.random_element`
+
+**Fixed:**
+
+* reset build number of conda package with every release
+
+
+
 v1.1.1
 ====================
 
