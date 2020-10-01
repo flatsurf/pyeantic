@@ -4,6 +4,15 @@ pyeantic Change Log
 
 .. current developments
 
+v1.2.1
+====================
+
+**Fixed:**
+
+* reference cppyythonizations only to test, not to build in conda recipe
+
+
+
 v1.2.0
 ====================
 
