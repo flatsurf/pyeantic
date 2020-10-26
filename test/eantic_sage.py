@@ -64,5 +64,18 @@ def test_arithmetic():
     assert (a + ZZ(1)) * (a - ZZ(1)) == (a*a - ZZ(1))
     assert (a + 1/ZZ(2)) * (a - 1/ZZ(2)) == (a*a - 1/ZZ(4)) 
 
+def test_cmp():
+    from pyeantic import eantic
+    from sage.all import ZZ, QQ
+    K = eantic.renf('x^2 - 2', 'x', '[1.4142 +/- 0.0001]')
+    a = K.gen()
+
+    assert a == a
+    assert a <= a
+    assert a >= a
+    assert a > 0
+    assert 0 < a
+    assert a != 0
+
 if __name__ == '__main__':
     sys.exit(pytest.main(sys.argv))

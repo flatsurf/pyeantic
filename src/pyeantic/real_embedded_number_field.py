@@ -178,7 +178,7 @@ class RealEmbeddedNumberFieldElement(FieldElement):
         """
         return repr(self.renf_elem)
 
-    def _cmp_(self, other):
+    def _richcmp_(self, other, op):
         r"""
         Compare this element and ``other``.
 
@@ -193,11 +193,13 @@ class RealEmbeddedNumberFieldElement(FieldElement):
             False
 
         """
+        from sage.structure.richcmp import rich_to_bool
         if self.renf_elem < other.renf_elem:
-            return -1
-        if self.renf_elem == other.renf_elem:
-            return 0
-        return 1
+            return rich_to_bool(op, -1)
+        elif self.renf_elem == other.renf_elem:
+            return rich_to_bool(op, 0)
+        else:
+            return rich_to_bool(op, 1)
 
     def _rational_(self):
         r"""
