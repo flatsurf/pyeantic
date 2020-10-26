@@ -4,6 +4,15 @@ pyeantic Change Log
 
 .. current developments
 
+v1.2.2
+====================
+
+**Fixed:**
+
+* comparison operators with SageMath 9.2
+
+
+
 v1.2.1
 ====================
 
