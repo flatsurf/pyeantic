@@ -288,6 +288,27 @@ class RealEmbeddedNumberFieldElement(FieldElement):
         self._set_parent(state[0])
         self.renf_elem = self.parent()(state[1]).renf_elem
 
+    def __hash__(self):
+        r"""
+        Return a hash value of this element.
+
+        EXAMPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: hash(K.gen()) == hash(K.gen())
+            True
+
+        Note that this hash is not compatible with the corresponding number
+        field element::
+
+            sage: hash(K.gen()) == hash(K.number_field(K.gen()))
+            False
+
+        """
+        return hash(self.renf_elem)
+
 
 class RealEmbeddedNumberField(UniqueRepresentation, CommutativeRing):
     r"""

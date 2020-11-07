@@ -17,7 +17,7 @@ Test that objects can be pickled::
     >>> from pickle import loads, dumps
     >>> loads(dumps(x)) == x
     True
-    >>> loads(dumps(x.parent())) is x.parent()
+    >>> loads(dumps(x.parent())) == x.parent()
     True
 
 """
