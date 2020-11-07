@@ -20,6 +20,16 @@ Test that objects can be pickled::
     >>> loads(dumps(x.parent())) == x.parent()
     True
 
+Test that we can recover from an invalid field definition. (This works equally
+in Python and SageMath but pytest handles the signal differently which makes it
+easier to test this in a SageMath doctest.)::
+
+    sage: from pyeantic import eantic
+    sage: K = eantic.renf("x^2 - 3", "x", "1.22 +/- 0.1")
+    Traceback (most recent call last):
+    ...
+    TypeError: ...
+
 """
 # -*- coding: utf-8 -*-
 ######################################################################
@@ -42,17 +52,8 @@ Test that objects can be pickled::
 #  along with pyeantic. If not, see <https://www.gnu.org/licenses/>.
 #####################################################################
 
-import cppyy
-
-# Importing cysignals after cppyy gives us proper stack traces on segfaults
-# whereas cppyy otherwise only reports "segmentation violation" (which is
-# probably what cling provides.)
 import os
-if os.environ.get('PYEANTIC_CYSIGNALS', True):
-    try:
-        import cysignals
-    except ModuleNotFoundError:
-        pass
+import cppyy
 
 from cppyythonizations.printing import enable_pretty_printing
 from cppyythonizations.pickling.cereal import enable_cereal
@@ -133,6 +134,7 @@ mpq_class rational(const renf_elem_class& x) {
 from cppyy.gbl import eantic
 
 eantic.renf = eantic.renf_class.make
+eantic.renf.__sig2exc__ = True
 
 # cppyy is confused by template resolution, see
 # https://bitbucket.org/wlav/cppyy/issues/119/templatized-constructor-is-ignored
