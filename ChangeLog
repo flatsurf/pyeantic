@@ -4,6 +4,19 @@ pyeantic Change Log
 
 .. current developments
 
+v1.3.0
+====================
+
+**Added:**
+
+* made elements of `RealEmbeddedNumberField` hashable
+
+**Fixed:**
+
+* `eantic.renf` does not crash Python on invalid input anymore
+
+
+
 v1.2.2
 ====================
 
