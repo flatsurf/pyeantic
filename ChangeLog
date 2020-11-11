@@ -4,6 +4,15 @@ pyeantic Change Log
 
 .. current developments
 
+v1.4.0
+====================
+
+**Added:**
+
+* added `vector()` method on `RealEmbeddedNumberFieldElement`.
+
+
+
 v1.3.0
 ====================
 
