@@ -309,6 +309,22 @@ class RealEmbeddedNumberFieldElement(FieldElement):
         """
         return hash(self.renf_elem)
 
+    def vector(self):
+        r"""
+        Return a vector representation of this element in terms of the basis of
+        the number field.
+
+        EXAPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: K.gen().vector()
+            (0, 1)
+
+        """
+        return self.parent().number_field(self).vector()
+
 
 class RealEmbeddedNumberField(UniqueRepresentation, CommutativeRing):
     r"""
