@@ -325,6 +325,21 @@ class RealEmbeddedNumberFieldElement(FieldElement):
         """
         return self.parent().number_field(self).vector()
 
+    def minpoly(self, var='x'):
+        r"""
+        Return the minimal polynomial of this element over the rationals.
+
+        EXAPLES::
+
+            sage: from pyeantic import RealEmbeddedNumberField
+            sage: K = NumberField(x**2 - 2, 'a', embedding=sqrt(AA(2)))
+            sage: K = RealEmbeddedNumberField(K)
+            sage: K.gen().minpoly()
+            x^2 - 2
+
+        """
+        return self.parent().number_field(self).minpoly(var)
+
 
 class RealEmbeddedNumberField(UniqueRepresentation, CommutativeRing):
     r"""
