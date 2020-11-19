@@ -1,3 +1,0 @@
-**Added:**
-
-* implemented `RealEmbeddedNumberFieldElement.minpoly()`

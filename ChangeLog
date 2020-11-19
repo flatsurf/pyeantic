@@ -4,6 +4,15 @@ pyeantic Change Log
 
 .. current developments
 
+v1.5.0
+====================
+
+**Added:**
+
+* implemented `RealEmbeddedNumberFieldElement.minpoly()`
+
+
+
 v1.4.0
 ====================
 
