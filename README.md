@@ -1,3 +1,9 @@
+# This Repository is Obsolete
+
+pyeantic is now a part of e-antic, see https://github.com/flatsurf/e-antic/tree/master/pyeantic.
+
+---
+
 [![Build Status](https://dev.azure.com/flatsurf/conda/_apis/build/status/flatsurf.pyeantic?branchName=master)](https://dev.azure.com/flatsurf/conda/_build/latest?definitionId=5&branchName=master)
 
 ## Python Wrapper for E-ANTIC
